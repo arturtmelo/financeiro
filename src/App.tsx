@@ -133,7 +133,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen pb-8">
+    <div id="top" className="min-h-screen pb-8">
       <Header />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
@@ -149,7 +149,9 @@ function App() {
           </div>
         </div>
 
-        <Dashboard transactions={transactions} />
+        <div id="dashboard">
+          <Dashboard transactions={transactions} />
+        </div>
 
         {showForm && (
           <div ref={formRef} className="mb-8 animate-slideDown">
@@ -163,12 +165,14 @@ function App() {
           </div>
         )}
 
-        <TransactionList
-          transactions={transactions}
-          onDelete={handleDeleteTransaction}
-          onEdit={handleEditTransaction}
-          paymentMethods={paymentMethods}
-        />
+        <div id="transactions">
+          <TransactionList
+            transactions={transactions}
+            onDelete={handleDeleteTransaction}
+            onEdit={handleEditTransaction}
+            paymentMethods={paymentMethods}
+          />
+        </div>
       </div>
 
       {showPaymentMethodsManager && (

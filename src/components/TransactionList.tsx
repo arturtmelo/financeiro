@@ -34,8 +34,9 @@ const TransactionList = ({
       const matchesAmount = t.amount.toString().includes(searchTerm);
       const matchesPaymentMethodSearch = t.paymentMethod.toLowerCase().includes(searchLower);
       const matchesCategory = t.category?.toLowerCase().includes(searchLower) || false;
-      
-      const matchesSearch = matchesDescription || matchesAmount || matchesPaymentMethodSearch || matchesCategory;
+
+      const matchesSearch =
+        matchesDescription || matchesAmount || matchesPaymentMethodSearch || matchesCategory;
       const matchesType = filterType === 'all' || t.type === filterType;
       const matchesPayment = filterPayment === 'all' || t.paymentMethod === filterPayment;
       return matchesSearch && matchesType && matchesPayment;
