@@ -193,21 +193,14 @@ function App() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }
         }}
-        className={`fixed bottom-6 right-6 p-4 ${
+        className={`fixed bottom-6 right-6 p-3 ${
           showForm
-            ? 'bg-red-500 hover:bg-red-600'
-            : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
-        } text-white rounded-full shadow-2xl transition-all transform hover:scale-110 z-50 group`}
+            ? 'bg-gray-700 hover:bg-gray-800'
+            : 'bg-purple-600 hover:bg-purple-700'
+        } text-white rounded-full shadow-lg transition-all transform hover:scale-110 z-50`}
         title={showForm ? 'Fechar formulário' : 'Nova transação'}
       >
-        {showForm ? (
-          <X className="w-7 h-7" />
-        ) : (
-          <Plus className="w-7 h-7" />
-        )}
-        <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-          {showForm ? 'Fechar' : 'Nova Transação'}
-        </span>
+        {showForm ? <X className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
       </button>
 
       {/* Botão Voltar ao Topo */}
