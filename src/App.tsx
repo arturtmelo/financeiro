@@ -154,7 +154,7 @@ function App() {
         </div>
 
         {showForm && (
-          <div ref={formRef} className="mb-8 animate-slideDown">
+          <div ref={formRef} className="mb-8 animate-slideDown scroll-mt-24">
             <TransactionForm
               onSubmit={editingTransaction ? handleUpdateTransaction : handleAddTransaction}
               onCancel={handleCancelForm}
