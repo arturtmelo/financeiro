@@ -86,7 +86,7 @@ const PaymentMethodsManager = ({
             <div className="flex items-center gap-2 sm:gap-3 min-w-0">
               <CreditCard className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" />
               <h2 className="text-lg sm:text-xl lg:text-2xl font-bold truncate">
-                Gerenciar Métodos de Pagamento
+                Gerenciar Métodos
               </h2>
             </div>
             <button
