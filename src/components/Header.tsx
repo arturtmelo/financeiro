@@ -18,7 +18,7 @@ const Header = () => {
             className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
           >
             <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-            <span className="text-lg sm:text-xl font-bold text-white">Lê Gostosa</span>
+            <span className="text-lg sm:text-xl font-bold text-white">Lê</span>
           </button>
 
           {/* User Info & Logout */}
