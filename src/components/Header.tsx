@@ -9,7 +9,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white/10 backdrop-blur-md border-b border-white/20">
+    <header className="sticky top-0 z-[1000] bg-white/10 backdrop-blur-md border-b border-white/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
         <div className="flex items-center justify-between gap-4">
           {/* Logo - Clicável */}
@@ -32,7 +32,7 @@ const Header = () => {
             {/* Botão Logout - Mobile e Desktop */}
             <button
               onClick={logout}
-              className="flex items-center justify-center gap-1.5 sm:gap-2 bg-red-500/90 hover:bg-red-600 active:bg-red-700 backdrop-blur-sm px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors text-white text-sm font-medium shadow-lg"
+              className="flex items-center justify-center gap-1.5 sm:gap-2 bg-white/10 hover:bg-white/20 active:bg-white/25 backdrop-blur-sm px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors text-white text-sm font-medium"
               title="Sair"
             >
               <LogOut className="w-4 h-4" />
