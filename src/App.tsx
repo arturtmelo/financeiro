@@ -198,7 +198,7 @@ function App() {
           }
         }}
         className={`fixed bottom-6 right-6 p-3 ${
-          showForm ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'
+          showForm ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-900 hover:bg-red-600'
         } text-white rounded-full shadow-lg transition-all transform hover:scale-110 z-[1000]`}
         title={showForm ? 'Fechar formulário' : 'Nova transação'}
       >
