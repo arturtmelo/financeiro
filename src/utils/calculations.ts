@@ -7,7 +7,9 @@ export const calculateMonthlyStats = (transactions: Transaction[], month?: Date)
   const end = endOfMonth(targetMonth);
 
   const filteredTransactions = transactions.filter((t) => {
-    const transactionDate = new Date(t.date);
+    // Evita problema de fuso horário ao criar date a partir de string YYYY-MM-DD
+    const [year, month, day] = t.date.split('-').map(Number);
+    const transactionDate = new Date(year, month - 1, day);
     return isWithinInterval(transactionDate, { start, end });
   });
 
@@ -35,7 +37,9 @@ export const formatCurrency = (value: number): string => {
 };
 
 export const formatDate = (date: string): string => {
-  return format(new Date(date), 'dd/MM/yyyy');
+  // Evita problema de fuso horário ao criar date a partir de string YYYY-MM-DD
+  const [year, month, day] = date.split('-').map(Number);
+  return format(new Date(year, month - 1, day), 'dd/MM/yyyy');
 };
 
 export const getPaymentMethodStats = (transactions: Transaction[]) => {
