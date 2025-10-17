@@ -28,7 +28,14 @@ const TransactionList = ({
 
   const filteredTransactions = transactions
     .filter((t) => {
-      const matchesSearch = t.description.toLowerCase().includes(searchTerm.toLowerCase());
+      // Busca global: pesquisa em descrição, valor, método de pagamento e categoria
+      const searchLower = searchTerm.toLowerCase();
+      const matchesDescription = t.description.toLowerCase().includes(searchLower);
+      const matchesAmount = t.amount.toString().includes(searchTerm);
+      const matchesPaymentMethodSearch = t.paymentMethod.toLowerCase().includes(searchLower);
+      const matchesCategory = t.category?.toLowerCase().includes(searchLower) || false;
+      
+      const matchesSearch = matchesDescription || matchesAmount || matchesPaymentMethodSearch || matchesCategory;
       const matchesType = filterType === 'all' || t.type === filterType;
       const matchesPayment = filterPayment === 'all' || t.paymentMethod === filterPayment;
       return matchesSearch && matchesType && matchesPayment;
@@ -60,7 +67,7 @@ const TransactionList = ({
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Buscar transação..."
+              placeholder="Buscar por título, valor, método..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors"

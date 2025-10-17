@@ -195,7 +195,7 @@ function App() {
         }}
         className={`fixed bottom-6 right-6 p-3 ${
           showForm ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'
-        } text-white rounded-full shadow-lg transition-all transform hover:scale-110 z-50`}
+        } text-white rounded-full shadow-lg transition-all transform hover:scale-110 z-[8000]`}
         title={showForm ? 'Fechar formulário' : 'Nova transação'}
       >
         {showForm ? <X className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
@@ -205,7 +205,7 @@ function App() {
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-24 right-6 p-3 bg-white/90 hover:bg-white text-purple-600 rounded-full shadow-lg transition-all transform hover:scale-110 z-50 animate-fadeIn"
+          className="fixed bottom-24 right-6 p-3 bg-white/90 hover:bg-white text-purple-600 rounded-full shadow-lg transition-all transform hover:scale-110 z-[8000] animate-fadeIn"
           title="Voltar ao topo"
         >
           <ArrowUp className="w-6 h-6" />
