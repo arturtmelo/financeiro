@@ -15,7 +15,7 @@ const Header = () => {
   const handleLogoClick = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  
+
   return (
     <header className="bg-white/10 backdrop-blur-md border-b border-white/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
@@ -26,9 +26,7 @@ const Header = () => {
             className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
           >
             <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-            <span className="text-lg sm:text-xl font-bold text-white">
-              Controle Financeiro
-            </span>
+            <span className="text-lg sm:text-xl font-bold text-white">Lê Gostosa</span>
           </button>
 
           {/* User Info & Logout */}
@@ -37,7 +35,7 @@ const Header = () => {
               <User className="w-4 h-4 text-white" />
               <span className="text-white text-sm font-medium">{user?.name}</span>
             </div>
-            
+
             <button
               onClick={() => setShowLogoutDialog(true)}
               className="flex items-center gap-1.5 sm:gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors text-white text-sm font-medium"
