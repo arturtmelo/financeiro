@@ -92,6 +92,10 @@ function App() {
   const handleEditTransaction = (transaction: Transaction) => {
     setEditingTransaction(transaction);
     setShowForm(true);
+    // Scroll para o formulário após um pequeno delay
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   };
 
   const handleCancelForm = () => {
