@@ -341,7 +341,7 @@ Crie `public/manifest.json`:
 ```json
 {
   "name": "Sistema Financeiro",
-  "short_name": "Lenise Gostosa",
+  "short_name": "Lê Gostosa",
   "description": "Controle suas finanças pessoais",
   "start_url": "/",
   "display": "standalone",

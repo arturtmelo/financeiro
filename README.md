@@ -135,10 +135,6 @@ financeiro/
 └── README.md
 ```
 
-## 🔒 Privacidade
-
-Todos os seus dados são armazenados localmente no seu navegador. Nenhuma informação é enviada para servidores externos.
-
 ## 🤝 Contribuindo
 
 Sugestões e melhorias são sempre bem-vindas! Sinta-se à vontade para:
