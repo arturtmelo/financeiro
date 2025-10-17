@@ -128,7 +128,7 @@ const TransactionList = ({
           filteredTransactions.map((transaction) => (
             <div
               key={transaction.id}
-              className="bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors group"
+              className="bg-white border border-gray-200 rounded-xl hover:shadow-md hover:border-purple-200 transition-all group"
             >
               {/* Desktop Layout */}
               <div className="hidden sm:flex items-center justify-between p-4">
