@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Transaction } from './types';
 import {
   loadTransactions,
@@ -14,7 +14,7 @@ import TransactionForm from './components/TransactionForm';
 import TransactionList from './components/TransactionList';
 import PaymentMethodsManager from './components/PaymentMethodsManager';
 import Login from './components/Login';
-import { Wallet } from 'lucide-react';
+import { Wallet, ArrowUp } from 'lucide-react';
 
 function App() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -23,6 +23,8 @@ function App() {
   const [showForm, setShowForm] = useState(false);
   const [showPaymentMethodsManager, setShowPaymentMethodsManager] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const formRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user) {
@@ -41,6 +43,15 @@ function App() {
       setPaymentMethods([]);
     }
   }, [user]);
+
+  // Mostrar botão de voltar ao topo
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleAddTransaction = async (transaction: Transaction) => {
     if (!user) return;
@@ -86,6 +97,10 @@ function App() {
   const handleCancelForm = () => {
     setShowForm(false);
     setEditingTransaction(null);
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handlePaymentMethodsChange = async (methods: string[]) => {
@@ -136,7 +151,15 @@ function App() {
             </div>
 
             <button
-              onClick={() => setShowForm(!showForm)}
+              onClick={() => {
+                setShowForm(!showForm);
+                // Scroll para o formulário no mobile após um pequeno delay
+                if (!showForm) {
+                  setTimeout(() => {
+                    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }, 100);
+                }
+              }}
               className="w-full sm:w-auto bg-white hover:bg-gray-100 text-purple-700 font-semibold px-6 py-3 rounded-xl shadow-lg transition-all transform hover:scale-105"
             >
               {showForm ? 'Fechar' : '+ Nova Transação'}
@@ -147,7 +170,7 @@ function App() {
         <Dashboard transactions={transactions} />
 
         {showForm && (
-          <div className="mb-8">
+          <div ref={formRef} className="mb-8 animate-slideDown">
             <TransactionForm
               onSubmit={editingTransaction ? handleUpdateTransaction : handleAddTransaction}
               onCancel={handleCancelForm}
@@ -172,6 +195,17 @@ function App() {
           onMethodsChange={handlePaymentMethodsChange}
           onClose={() => setShowPaymentMethodsManager(false)}
         />
+      )}
+
+      {/* Botão Voltar ao Topo */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-full shadow-lg transition-all transform hover:scale-110 z-50 animate-fadeIn"
+          title="Voltar ao topo"
+        >
+          <ArrowUp className="w-6 h-6" />
+        </button>
       )}
     </div>
   );

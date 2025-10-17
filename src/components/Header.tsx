@@ -1,49 +1,35 @@
 import { TrendingUp, LogOut, User } from 'lucide-react';
+import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import ConfirmDialog from './ConfirmDialog';
 
 const Header = () => {
   const { user, logout } = useAuth();
-  const currentDate = new Date();
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   const handleLogout = () => {
-    if (window.confirm('Tem certeza que deseja sair?')) {
-      logout();
-    }
+    logout();
+    setShowLogoutDialog(false);
   };
 
+  const handleLogoClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  
   return (
     <header className="bg-white/10 backdrop-blur-md border-b border-white/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
         <div className="flex items-center justify-between gap-4">
-          {/* Logo */}
-          <div className="flex items-center gap-2">
+          {/* Logo - Clicável */}
+          <button
+            onClick={handleLogoClick}
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
+          >
             <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-            <span className="text-lg sm:text-xl font-bold text-white hidden sm:block">
+            <span className="text-lg sm:text-xl font-bold text-white">
               Controle Financeiro
             </span>
-          </div>
-
-          {/* Center: Data */}
-          <div className="flex-1 flex justify-center">
-            {/* Desktop: Data completa */}
-            <div className="hidden md:block text-white/80 text-sm">
-              {currentDate.toLocaleDateString('pt-BR', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </div>
-
-            {/* Mobile: Data curta */}
-            <div className="md:hidden text-white/80 text-xs sm:text-sm">
-              {currentDate.toLocaleDateString('pt-BR', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-              })}
-            </div>
-          </div>
+          </button>
 
           {/* User Info & Logout */}
           <div className="flex items-center gap-2 sm:gap-3">
@@ -51,9 +37,9 @@ const Header = () => {
               <User className="w-4 h-4 text-white" />
               <span className="text-white text-sm font-medium">{user?.name}</span>
             </div>
-
+            
             <button
-              onClick={handleLogout}
+              onClick={() => setShowLogoutDialog(true)}
               className="flex items-center gap-1.5 sm:gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors text-white text-sm font-medium"
               title="Sair"
             >
@@ -63,6 +49,17 @@ const Header = () => {
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={showLogoutDialog}
+        title="Sair da Conta"
+        message={`Tem certeza que deseja sair, ${user?.name}?`}
+        confirmText="Sim, sair"
+        cancelText="Cancelar"
+        confirmColor="blue"
+        onConfirm={handleLogout}
+        onCancel={() => setShowLogoutDialog(false)}
+      />
     </header>
   );
 };

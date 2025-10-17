@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Transaction, TransactionType } from '../types';
 import { formatCurrency, formatDate } from '../utils/calculations';
-import { Trash2, Edit, Search, Filter, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
+import { Trash2, Edit, Search, Filter, ArrowUpCircle, ArrowDownCircle, Inbox } from 'lucide-react';
 import ConfirmDialog from './ConfirmDialog';
 
 interface TransactionListProps {
@@ -103,11 +103,16 @@ const TransactionList = ({
       {/* Lista de Transações */}
       <div className="space-y-3">
         {filteredTransactions.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-400 text-lg">Nenhuma transação encontrada</p>
-            <p className="text-gray-400 text-sm mt-2">
+          <div className="text-center py-16">
+            <div className="flex justify-center mb-4">
+              <div className="p-4 bg-gray-100 rounded-full">
+                <Inbox className="w-12 h-12 text-gray-400" />
+              </div>
+            </div>
+            <p className="text-gray-600 text-lg font-medium mb-2">Nenhuma transação encontrada</p>
+            <p className="text-gray-400 text-sm">
               {transactions.length === 0
-                ? 'Adicione sua primeira transação acima'
+                ? 'Comece adicionando sua primeira transação'
                 : 'Tente ajustar os filtros de busca'}
             </p>
           </div>
