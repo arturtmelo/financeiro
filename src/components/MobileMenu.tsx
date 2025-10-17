@@ -1,4 +1,4 @@
-import { Home, BarChart3, List, LogOut, X } from 'lucide-react';
+import { Home, BarChart3, List, LogOut, X, User } from 'lucide-react';
 import { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -37,99 +37,80 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
     onClose();
   };
 
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleBackdropClick = () => {
     onClose();
-  };
-
-  const handleMenuClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
   };
 
   if (!isOpen) return null;
 
   return (
     <div 
-      className="fixed inset-0"
-      style={{ zIndex: 99999 }}
+      className="fixed inset-0 z-[99999] flex items-center justify-center p-4"
+      onClick={handleBackdropClick}
     >
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fadeIn"
-        onClick={handleBackdropClick}
-      />
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fadeIn" />
 
-      {/* Menu Lateral */}
+      {/* Menu Centralizado */}
       <div
-        className="absolute top-0 right-0 h-full w-72 sm:w-80 bg-gradient-to-b from-purple-600 to-purple-800 shadow-2xl overflow-hidden"
-        onClick={handleMenuClick}
-        style={{ 
-          animation: 'slideInRight 0.3s ease-out',
-        }}
+        className="relative bg-gradient-to-br from-purple-600 via-purple-700 to-purple-900 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-scaleIn"
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* Header do Menu */}
-        <div className="p-5 border-b border-white/20 bg-white/5">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-white">Menu</h2>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-lg transition-colors active:scale-95"
-              aria-label="Fechar menu"
-            >
-              <X className="w-6 h-6 text-white" />
-            </button>
-          </div>
+        {/* Header */}
+        <div className="relative bg-gradient-to-r from-purple-800 to-indigo-800 p-6">
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-full transition-colors"
+            aria-label="Fechar menu"
+          >
+            <X className="w-6 h-6 text-white" />
+          </button>
           
-          {/* User Info */}
-          <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm px-3 py-3 rounded-xl">
-            <div className="w-11 h-11 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-bold text-xl">
-                {user?.name.charAt(0).toUpperCase()}
-              </span>
+          <div className="flex flex-col items-center text-center">
+            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-3 border-4 border-white/30">
+              <User className="w-10 h-10 text-white" />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-white font-medium truncate">{user?.name}</p>
-              <p className="text-white/70 text-sm truncate">{user?.email}</p>
-            </div>
+            <h2 className="text-2xl font-bold text-white mb-1">{user?.name}</h2>
+            <p className="text-white/80 text-sm">{user?.email}</p>
           </div>
         </div>
 
         {/* Menu Items */}
-        <nav className="p-4 flex-1 overflow-y-auto">
+        <div className="p-6 space-y-3">
           <button
             onClick={() => handleNavigation('top')}
-            className="w-full flex items-center gap-4 px-4 py-3.5 text-white hover:bg-white/15 active:bg-white/20 rounded-xl transition-all mb-2"
+            className="w-full flex items-center gap-4 px-5 py-4 bg-white/10 hover:bg-white/20 active:bg-white/25 text-white rounded-xl transition-all"
           >
-            <Home className="w-5 h-5 flex-shrink-0" />
-            <span className="font-medium text-left">Início</span>
+            <Home className="w-6 h-6" />
+            <span className="font-semibold text-lg">Início</span>
           </button>
 
           <button
             onClick={() => handleNavigation('dashboard')}
-            className="w-full flex items-center gap-4 px-4 py-3.5 text-white hover:bg-white/15 active:bg-white/20 rounded-xl transition-all mb-2"
+            className="w-full flex items-center gap-4 px-5 py-4 bg-white/10 hover:bg-white/20 active:bg-white/25 text-white rounded-xl transition-all"
           >
-            <BarChart3 className="w-5 h-5 flex-shrink-0" />
-            <span className="font-medium text-left">Total/Método</span>
+            <BarChart3 className="w-6 h-6" />
+            <span className="font-semibold text-lg">Total/Método</span>
           </button>
 
           <button
             onClick={() => handleNavigation('transactions')}
-            className="w-full flex items-center gap-4 px-4 py-3.5 text-white hover:bg-white/15 active:bg-white/20 rounded-xl transition-all mb-2"
+            className="w-full flex items-center gap-4 px-5 py-4 bg-white/10 hover:bg-white/20 active:bg-white/25 text-white rounded-xl transition-all"
           >
-            <List className="w-5 h-5 flex-shrink-0" />
-            <span className="font-medium text-left">Histórico</span>
+            <List className="w-6 h-6" />
+            <span className="font-semibold text-lg">Histórico</span>
           </button>
-        </nav>
 
-        {/* Logout Button (no final) */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/20 bg-purple-900/30">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3.5 bg-red-500 hover:bg-red-600 active:bg-red-700 text-white font-semibold rounded-xl transition-all shadow-lg active:scale-95"
-          >
-            <LogOut className="w-5 h-5" />
-            <span>Sair</span>
-          </button>
+          {/* Botão Sair */}
+          <div className="pt-4 border-t border-white/20">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center gap-3 px-5 py-4 bg-red-500 hover:bg-red-600 active:bg-red-700 text-white font-bold rounded-xl transition-all shadow-lg"
+            >
+              <LogOut className="w-6 h-6" />
+              <span className="text-lg">Sair da Conta</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -137,4 +118,3 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
 };
 
 export default MobileMenu;
-
