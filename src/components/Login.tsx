@@ -87,11 +87,6 @@ const Login = () => {
             <TrendingUp className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">Lê Gostosa</h1>
-          <p className="text-white/80 text-sm sm:text-base">
-            {isRegistering
-              ? 'Crie sua conta e comece a gerenciar suas finanças'
-              : 'Acesse sua conta para gerenciar suas finanças'}
-          </p>
         </div>
 
         {/* Form Card */}

@@ -120,7 +120,7 @@ const TransactionList = ({
           filteredTransactions.map((transaction) => (
             <div
               key={transaction.id}
-              className="bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors group"
+              className="bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors group"
             >
               {/* Desktop Layout */}
               <div className="hidden sm:flex items-center justify-between p-4">
@@ -224,20 +224,20 @@ const TransactionList = ({
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2 pt-2 border-t border-gray-200">
+                <div className="flex items-center gap-2 pt-2 border-t border-gray-300">
                   <button
                     onClick={() => onEdit(transaction)}
-                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors text-sm font-medium"
+                    className="flex-1 flex items-center justify-center p-2.5 text-blue-600 bg-blue-50 active:bg-blue-100 rounded-lg transition-colors"
+                    title="Editar"
                   >
-                    <Edit className="w-4 h-4" />
-                    Editar
+                    <Edit className="w-5 h-5" />
                   </button>
                   <button
                     onClick={() => handleDeleteClick(transaction.id, transaction.description)}
-                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors text-sm font-medium"
+                    className="flex-1 flex items-center justify-center p-2.5 text-red-600 bg-red-50 active:bg-red-100 rounded-lg transition-colors"
+                    title="Excluir"
                   >
-                    <Trash2 className="w-4 h-4" />
-                    Excluir
+                    <Trash2 className="w-5 h-5" />
                   </button>
                 </div>
               </div>
