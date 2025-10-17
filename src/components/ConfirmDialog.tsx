@@ -40,8 +40,9 @@ const ConfirmDialog = ({
     <div
       className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn"
       onClick={handleBackdropClick}
+      style={{ alignItems: 'center', justifyContent: 'center' }}
     >
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-scaleIn">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-sm sm:max-w-md w-full overflow-hidden animate-scaleIn my-auto">
         {/* Header */}
         <div className="bg-gradient-to-r from-orange-500 to-red-600 p-4 sm:p-5 text-white">
           <div className="flex items-center justify-between gap-3">
