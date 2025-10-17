@@ -83,7 +83,7 @@ const TransactionList = ({
               onChange={(e) => setFilterType(e.target.value as TransactionType | 'all')}
               className="w-full pl-10 pr-4 py-2 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors bg-white appearance-none"
             >
-              <option value="all">Todos os tipos</option>
+              <option value="all">Entradas e Saídas</option>
               <option value="entrada">Entradas</option>
               <option value="saida">Saídas</option>
             </select>
@@ -97,7 +97,7 @@ const TransactionList = ({
               onChange={(e) => setFilterPayment(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors bg-white appearance-none"
             >
-              <option value="all">Todos os métodos</option>
+              <option value="all">Todos Pagamentos</option>
               {paymentMethods.map((method) => (
                 <option key={method} value={method}>
                   {method}
