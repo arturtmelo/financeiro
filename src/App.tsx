@@ -14,7 +14,7 @@ import TransactionForm from './components/TransactionForm';
 import TransactionList from './components/TransactionList';
 import PaymentMethodsManager from './components/PaymentMethodsManager';
 import Login from './components/Login';
-import { Wallet, ArrowUp } from 'lucide-react';
+import { Wallet, ArrowUp, Plus, X } from 'lucide-react';
 
 function App() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -137,32 +137,15 @@ function App() {
       <Header />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        {/* Header - Mobile: Empilhado | Desktop: Lado a lado */}
+        {/* Header */}
         <div className="mb-6 sm:mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="bg-white/20 backdrop-blur-sm p-2 sm:p-3 rounded-xl">
-                <Wallet className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">Financeiro</h1>
-              </div>
+          <div className="flex items-center gap-3">
+            <div className="bg-white/20 backdrop-blur-sm p-2 sm:p-3 rounded-xl">
+              <Wallet className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
-
-            <button
-              onClick={() => {
-                setShowForm(!showForm);
-                // Scroll para o formulário no mobile após um pequeno delay
-                if (!showForm) {
-                  setTimeout(() => {
-                    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }, 100);
-                }
-              }}
-              className="w-full sm:w-auto bg-white hover:bg-gray-100 text-purple-700 font-semibold px-6 py-3 rounded-xl shadow-lg transition-all transform hover:scale-105"
-            >
-              {showForm ? 'Fechar' : '+ Nova Transação'}
-            </button>
+            <div>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">Financeiro</h1>
+            </div>
           </div>
         </div>
 
@@ -196,11 +179,42 @@ function App() {
         />
       )}
 
+      {/* Botão FAB: Nova Transação */}
+      <button
+        onClick={() => {
+          setShowForm(!showForm);
+          // Scroll para o formulário após um pequeno delay
+          if (!showForm) {
+            setTimeout(() => {
+              formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+          } else {
+            // Se está fechando, volta ao topo
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }}
+        className={`fixed bottom-6 right-6 p-4 ${
+          showForm
+            ? 'bg-red-500 hover:bg-red-600'
+            : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
+        } text-white rounded-full shadow-2xl transition-all transform hover:scale-110 z-50 group`}
+        title={showForm ? 'Fechar formulário' : 'Nova transação'}
+      >
+        {showForm ? (
+          <X className="w-7 h-7" />
+        ) : (
+          <Plus className="w-7 h-7" />
+        )}
+        <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          {showForm ? 'Fechar' : 'Nova Transação'}
+        </span>
+      </button>
+
       {/* Botão Voltar ao Topo */}
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-full shadow-lg transition-all transform hover:scale-110 z-50 animate-fadeIn"
+          className="fixed bottom-24 right-6 p-3 bg-white/90 hover:bg-white text-purple-600 rounded-full shadow-lg transition-all transform hover:scale-110 z-50 animate-fadeIn"
           title="Voltar ao topo"
         >
           <ArrowUp className="w-6 h-6" />

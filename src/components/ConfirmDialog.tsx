@@ -67,18 +67,18 @@ const ConfirmDialog = ({
         </div>
 
         {/* Footer */}
-        <div className="bg-gray-50 px-5 sm:px-6 py-4 flex flex-col-reverse sm:flex-row gap-3 justify-end">
-          <button
-            onClick={onCancel}
-            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-xl transition-colors"
-          >
-            {cancelText}
-          </button>
+        <div className="bg-gray-50 px-4 sm:px-6 py-4 flex flex-col sm:flex-row gap-3 sm:gap-3 sm:justify-end">
           <button
             onClick={onConfirm}
-            className={`flex items-center justify-center gap-2 px-5 py-2.5 ${colorClasses[confirmColor]} text-white font-semibold rounded-xl shadow-lg transition-all transform hover:scale-105`}
+            className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 sm:py-2.5 ${colorClasses[confirmColor]} text-white font-semibold rounded-xl shadow-lg transition-all transform active:scale-95 sm:hover:scale-105 order-1`}
           >
             {confirmText}
+          </button>
+          <button
+            onClick={onCancel}
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 sm:py-2.5 bg-gray-200 hover:bg-gray-300 active:bg-gray-400 text-gray-700 font-semibold rounded-xl transition-colors order-2"
+          >
+            {cancelText}
           </button>
         </div>
       </div>
