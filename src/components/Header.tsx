@@ -1,9 +1,9 @@
-import { TrendingUp, User, LogOut } from 'lucide-react';
+import { TrendingUp, LogOut } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
 const Header = () => {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -45,36 +45,17 @@ const Header = () => {
             </span>
           </button>
 
-          {/* User Info & Logout */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Desktop: Nome do usuário */}
-            <div className="hidden sm:flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-lg">
-              <User
-                className={`w-4 h-4 transition-colors ${
-                  isScrolled ? 'text-purple-600' : 'text-white'
-                }`}
-              />
-              <span
-                className={`text-sm font-medium transition-colors ${
-                  isScrolled ? 'text-gray-900' : 'text-white'
-                }`}
-              >
-                {user?.name}
-              </span>
-            </div>
-
-            {/* Botão Logout - Mobile e Desktop */}
-            <button
-              onClick={logout}
-              className={`flex items-center justify-center gap-1.5 sm:gap-2 bg-white/10 hover:bg-white/20 active:bg-white/25 backdrop-blur-sm px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors text-sm font-medium ${
-                isScrolled ? 'text-gray-900' : 'text-white'
-              }`}
-              title="Sair"
-            >
-              <LogOut className="w-4 h-4" />
-              <span className="hidden sm:inline">Sair</span>
-            </button>
-          </div>
+          {/* Botão Logout - Mobile e Desktop */}
+          <button
+            onClick={logout}
+            className={`flex items-center justify-center gap-1.5 sm:gap-2 bg-white/10 hover:bg-white/20 active:bg-white/25 backdrop-blur-sm px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors text-sm font-medium ${
+              isScrolled ? 'text-gray-900' : 'text-white'
+            }`}
+            title="Sair"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="hidden sm:inline">Sair</span>
+          </button>
         </div>
       </div>
     </header>

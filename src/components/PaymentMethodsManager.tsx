@@ -111,7 +111,7 @@ const PaymentMethodsManager = ({
                 value={newMethod}
                 onChange={(e) => setNewMethod(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleAdd()}
-                placeholder="Ex: Cartão Nubank, PayPal..."
+                placeholder="Ex: Cartão Santander, Pix..."
                 className="flex-1 px-3 sm:px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors text-sm sm:text-base"
               />
               <button
