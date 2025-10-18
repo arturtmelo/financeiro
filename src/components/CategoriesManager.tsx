@@ -8,11 +8,7 @@ interface CategoriesManagerProps {
   onClose: () => void;
 }
 
-const CategoriesManager = ({
-  categories,
-  onCategoriesChange,
-  onClose,
-}: CategoriesManagerProps) => {
+const CategoriesManager = ({ categories, onCategoriesChange, onClose }: CategoriesManagerProps) => {
   const [newCategory, setNewCategory] = useState('');
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editingValue, setEditingValue] = useState('');
@@ -232,4 +228,3 @@ const CategoriesManager = ({
 };
 
 export default CategoriesManager;
-

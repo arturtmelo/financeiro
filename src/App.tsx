@@ -6,7 +6,12 @@ import {
   updateTransaction as updateTransactionInFirestore,
   deleteTransaction as deleteTransactionFromFirestore,
 } from './services/firestoreService';
-import { loadPaymentMethods, savePaymentMethods, loadCategories, saveCategories } from './services/firestoreService';
+import {
+  loadPaymentMethods,
+  savePaymentMethods,
+  loadCategories,
+  saveCategories,
+} from './services/firestoreService';
 import { useAuth } from './contexts/AuthContext';
 import Header from './components/Header';
 import Dashboard from './components/Dashboard';

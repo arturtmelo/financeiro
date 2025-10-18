@@ -23,14 +23,7 @@ export interface Transaction {
 }
 
 // Adicionar enum de categorias
-export type Category =
-  | 'Alimentação'
-  | 'Transporte'
-  | 'Saúde'
-  | 'Educação'
-  | 'Lazer'
-  | 'Moradia'
-  | 'Outros';
+export type Category = 'Mercado' | 'Ceveja' | 'Conta de Luz' | 'Outros';
 ```
 
 ### Passo 2: Atualizar o Formulário

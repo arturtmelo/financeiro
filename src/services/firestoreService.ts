@@ -163,16 +163,7 @@ export const savePaymentMethods = async (methods: string[], userId: string): Pro
 
 // ==================== CATEGORIAS ====================
 
-const DEFAULT_CATEGORIES = [
-  'Alimentação',
-  'Transporte',
-  'Saúde',
-  'Educação',
-  'Lazer',
-  'Moradia',
-  'Vestuário',
-  'Outro',
-];
+const DEFAULT_CATEGORIES = ['Mercado', 'Cerveja', 'Conta de Luz', 'Outro'];
 
 /**
  * Carregar categorias do usuário
