@@ -8,6 +8,8 @@ interface TransactionFormProps {
   editingTransaction?: Transaction | null;
   paymentMethods: string[];
   onManagePaymentMethods: () => void;
+  categories: string[];
+  onManageCategories: () => void;
 }
 
 const TransactionForm = ({
@@ -16,6 +18,8 @@ const TransactionForm = ({
   editingTransaction,
   paymentMethods,
   onManagePaymentMethods,
+  categories,
+  onManageCategories,
 }: TransactionFormProps) => {
   // Função para obter data local no formato YYYY-MM-DD
   const getLocalDateString = (date: Date = new Date()) => {
@@ -30,7 +34,7 @@ const TransactionForm = ({
   const [type, setType] = useState<TransactionType>('saida');
   const [paymentMethod, setPaymentMethod] = useState(paymentMethods[0] || '');
   const [date, setDate] = useState(getLocalDateString());
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState<string>('');
 
   useEffect(() => {
     if (editingTransaction) {
@@ -50,6 +54,13 @@ const TransactionForm = ({
     }
   }, [paymentMethods, paymentMethod]);
 
+  // Atualizar categoria se a lista mudar e a atual não existir mais
+  useEffect(() => {
+    if (category && categories.length > 0 && !categories.includes(category)) {
+      setCategory('');
+    }
+  }, [categories, category]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -65,7 +76,7 @@ const TransactionForm = ({
       type,
       paymentMethod,
       date,
-      category: category.trim() || undefined,
+      category: category || undefined,
     };
 
     onSubmit(transaction);
@@ -204,16 +215,44 @@ const TransactionForm = ({
 
           {/* Categoria */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Categoria (opcional)
-            </label>
-            <input
-              type="text"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              placeholder="Ex: Alimentação, Transporte..."
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors"
-            />
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-sm font-semibold text-gray-700">
+                Categoria (opcional)
+              </label>
+              <button
+                type="button"
+                onClick={onManageCategories}
+                className="text-sm text-green-600 hover:text-green-700 font-medium flex items-center gap-1"
+              >
+                <Settings className="w-4 h-4" />
+                Gerenciar
+              </button>
+            </div>
+            {categories.length > 0 ? (
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors bg-white"
+              >
+                <option value="">Selecione uma categoria</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <div className="p-4 bg-yellow-50 border-2 border-yellow-200 rounded-xl text-sm text-yellow-800">
+                Nenhuma categoria cadastrada.{' '}
+                <button
+                  type="button"
+                  onClick={onManageCategories}
+                  className="font-semibold underline hover:text-yellow-900"
+                >
+                  Clique aqui para adicionar
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

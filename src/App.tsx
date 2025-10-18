@@ -6,13 +6,14 @@ import {
   updateTransaction as updateTransactionInFirestore,
   deleteTransaction as deleteTransactionFromFirestore,
 } from './services/firestoreService';
-import { loadPaymentMethods, savePaymentMethods } from './services/firestoreService';
+import { loadPaymentMethods, savePaymentMethods, loadCategories, saveCategories } from './services/firestoreService';
 import { useAuth } from './contexts/AuthContext';
 import Header from './components/Header';
 import Dashboard from './components/Dashboard';
 import TransactionForm from './components/TransactionForm';
 import TransactionList from './components/TransactionList';
 import PaymentMethodsManager from './components/PaymentMethodsManager';
+import CategoriesManager from './components/CategoriesManager';
 import Login from './components/Login';
 import { Wallet, ArrowUp, Plus, X } from 'lucide-react';
 
@@ -20,8 +21,10 @@ function App() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [paymentMethods, setPaymentMethods] = useState<string[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [showPaymentMethodsManager, setShowPaymentMethodsManager] = useState(false);
+  const [showCategoriesManager, setShowCategoriesManager] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
@@ -37,10 +40,16 @@ function App() {
       loadPaymentMethods(user.id).then((methods) => {
         setPaymentMethods(methods);
       });
+
+      // Carregar categorias do Firestore
+      loadCategories(user.id).then((cats) => {
+        setCategories(cats);
+      });
     } else {
       // Limpar dados quando usuário deslogar
       setTransactions([]);
       setPaymentMethods([]);
+      setCategories([]);
     }
   }, [user]);
 
@@ -118,6 +127,17 @@ function App() {
     }
   };
 
+  const handleCategoriesChange = async (cats: string[]) => {
+    if (!user) return;
+    try {
+      await saveCategories(cats, user.id);
+      setCategories(cats);
+    } catch (error) {
+      console.error('Erro ao salvar categorias:', error);
+      alert('Erro ao salvar categorias. Tente novamente.');
+    }
+  };
+
   // Mostrar loading enquanto verifica autenticação
   if (isLoading) {
     return (
@@ -161,6 +181,8 @@ function App() {
               editingTransaction={editingTransaction}
               paymentMethods={paymentMethods}
               onManagePaymentMethods={() => setShowPaymentMethodsManager(true)}
+              categories={categories}
+              onManageCategories={() => setShowCategoriesManager(true)}
             />
           </div>
         )}
@@ -180,6 +202,14 @@ function App() {
           methods={paymentMethods}
           onMethodsChange={handlePaymentMethodsChange}
           onClose={() => setShowPaymentMethodsManager(false)}
+        />
+      )}
+
+      {showCategoriesManager && (
+        <CategoriesManager
+          categories={categories}
+          onCategoriesChange={handleCategoriesChange}
+          onClose={() => setShowCategoriesManager(false)}
         />
       )}
 

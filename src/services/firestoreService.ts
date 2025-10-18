@@ -160,3 +160,49 @@ export const savePaymentMethods = async (methods: string[], userId: string): Pro
     throw error;
   }
 };
+
+// ==================== CATEGORIAS ====================
+
+const DEFAULT_CATEGORIES = [
+  'Alimentação',
+  'Transporte',
+  'Saúde',
+  'Educação',
+  'Lazer',
+  'Moradia',
+  'Vestuário',
+  'Outro',
+];
+
+/**
+ * Carregar categorias do usuário
+ */
+export const loadCategories = async (userId: string): Promise<string[]> => {
+  try {
+    const categoriesDoc = await getDoc(doc(db, 'users', userId, 'settings', 'categories'));
+
+    if (categoriesDoc.exists()) {
+      return categoriesDoc.data().categories || DEFAULT_CATEGORIES;
+    }
+
+    // Se não existir, criar com as categorias padrão
+    await saveCategories(DEFAULT_CATEGORIES, userId);
+    return DEFAULT_CATEGORIES;
+  } catch (error) {
+    console.error('Erro ao carregar categorias:', error);
+    return DEFAULT_CATEGORIES;
+  }
+};
+
+/**
+ * Salvar categorias do usuário
+ */
+export const saveCategories = async (categories: string[], userId: string): Promise<void> => {
+  try {
+    const categoriesRef = doc(db, 'users', userId, 'settings', 'categories');
+    await setDoc(categoriesRef, { categories });
+  } catch (error) {
+    console.error('Erro ao salvar categorias:', error);
+    throw error;
+  }
+};
