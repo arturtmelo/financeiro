@@ -255,29 +255,35 @@ function App() {
         />
       )}
 
-      {/* Botão FAB: Nova Transação (apenas na aba Visão Geral) */}
-      {activeTab === 'overview' && (
-        <button
-          onClick={() => {
+      {/* Botão FAB: Nova Transação */}
+      <button
+        onClick={() => {
+          // Se estiver na aba Analytics, vai para Overview
+          if (activeTab === 'analytics') {
+            setActiveTab('overview');
+            setShowForm(true);
+            setTimeout(() => {
+              formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+          } else {
+            // Se já estiver em Overview, toggle normal
             setShowForm(!showForm);
-            // Scroll para o formulário após um pequeno delay
             if (!showForm) {
               setTimeout(() => {
                 formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
               }, 100);
             } else {
-              // Se está fechando, volta ao topo
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }
-          }}
-          className={`fixed bottom-6 right-6 p-4 ${
-            showForm ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-900 hover:bg-green-600'
-          } text-white rounded-full shadow-lg transition-all transform hover:scale-110 z-[1000]`}
-          title={showForm ? 'Fechar formulário' : 'Nova transação'}
-        >
-          {showForm ? <X className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
-        </button>
-      )}
+          }
+        }}
+        className={`fixed bottom-6 right-6 p-3 ${
+          showForm ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-900 hover:bg-red-600'
+        } text-white rounded-full shadow-lg transition-all transform hover:scale-110 z-[1000]`}
+        title={showForm ? 'Fechar formulário' : 'Nova transação'}
+      >
+        {showForm ? <X className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
+      </button>
 
       {/* Botão Voltar ao Topo */}
       {showScrollTop && (
