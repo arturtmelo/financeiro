@@ -177,28 +177,28 @@ function App() {
             </div>
 
             {/* Navegação por Abas */}
-            <div className="flex gap-2 bg-white/10 backdrop-blur-sm p-1 rounded-xl">
+            <div className="flex gap-2 bg-white/10 backdrop-blur-sm p-1 rounded-xl w-full sm:w-auto">
               <button
                 onClick={() => setActiveTab('overview')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all ${
+                className={`flex-1 sm:flex-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 rounded-lg font-semibold transition-all ${
                   activeTab === 'overview'
                     ? 'bg-white text-purple-600 shadow-md'
                     : 'text-white hover:bg-white/10'
                 }`}
               >
                 <List className="w-4 h-4" />
-                <span className="hidden sm:inline">Visão Geral</span>
+                <span>Visão Geral</span>
               </button>
               <button
                 onClick={() => setActiveTab('analytics')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all ${
+                className={`flex-1 sm:flex-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 rounded-lg font-semibold transition-all ${
                   activeTab === 'analytics'
                     ? 'bg-white text-purple-600 shadow-md'
                     : 'text-white hover:bg-white/10'
                 }`}
               >
                 <BarChart3 className="w-4 h-4" />
-                <span className="hidden sm:inline">Análises</span>
+                <span>Análises</span>
               </button>
             </div>
           </div>
@@ -255,27 +255,29 @@ function App() {
         />
       )}
 
-      {/* Botão FAB: Nova Transação */}
-      <button
-        onClick={() => {
-          setShowForm(!showForm);
-          // Scroll para o formulário após um pequeno delay
-          if (!showForm) {
-            setTimeout(() => {
-              formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
-          } else {
-            // Se está fechando, volta ao topo
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }
-        }}
-        className={`fixed bottom-6 right-6 p-3 ${
-          showForm ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-900 hover:bg-green-700'
-        } text-white rounded-full shadow-lg transition-all transform hover:scale-110 z-[1000]`}
-        title={showForm ? 'Fechar formulário' : 'Nova transação'}
-      >
-        {showForm ? <X className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
-      </button>
+      {/* Botão FAB: Nova Transação (apenas na aba Visão Geral) */}
+      {activeTab === 'overview' && (
+        <button
+          onClick={() => {
+            setShowForm(!showForm);
+            // Scroll para o formulário após um pequeno delay
+            if (!showForm) {
+              setTimeout(() => {
+                formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }, 100);
+            } else {
+              // Se está fechando, volta ao topo
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+          className={`fixed bottom-6 right-6 p-3 ${
+            showForm ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-900 hover:bg-red-600'
+          } text-white rounded-full shadow-lg transition-all transform hover:scale-110 z-[1000]`}
+          title={showForm ? 'Fechar formulário' : 'Nova transação'}
+        >
+          {showForm ? <X className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
+        </button>
+      )}
 
       {/* Botão Voltar ao Topo */}
       {showScrollTop && (

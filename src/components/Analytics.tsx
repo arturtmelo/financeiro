@@ -180,30 +180,30 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header com filtros */}
-      <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
+        <div className="flex flex-col gap-3 sm:gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-              <Target className="w-6 h-6 text-purple-600" />
+            <h2 className="text-lg sm:text-2xl font-bold text-gray-800 flex items-center gap-2">
+              <Target className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
               Análise Financeira
             </h2>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-xs sm:text-sm text-gray-500 mt-1">
               {periodLabels[periodFilter]} • {stats.totalTransactions} transações
             </p>
           </div>
 
           {/* Filtros de período */}
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2">
             {(Object.keys(periodLabels) as PeriodFilter[]).map((period) => (
               <button
                 key={period}
                 onClick={() => setPeriodFilter(period)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                className={`px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                   periodFilter === period
                     ? 'bg-purple-600 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200 active:bg-gray-300'
                 }`}
               >
                 {periodLabels[period].replace('Últimos ', '').replace('Último ', '')}
@@ -214,27 +214,31 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
       </div>
 
       {/* Cards de estatísticas */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Card: Entradas */}
-        <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-lg p-4 sm:p-6 text-white">
-          <div className="flex items-center justify-between mb-2">
-            <ArrowUpCircle className="w-8 h-8 opacity-80" />
+        <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-4 lg:p-6 text-white">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 mb-2">
+            <ArrowUpCircle className="w-6 h-6 sm:w-8 sm:h-8 opacity-80" />
             <span className="text-xs sm:text-sm font-semibold opacity-90">Entradas</span>
           </div>
-          <p className="text-2xl sm:text-3xl font-bold">{formatCurrency(stats.entradas)}</p>
-          <p className="text-xs sm:text-sm mt-2 opacity-90">
+          <p className="text-xl sm:text-2xl lg:text-3xl font-bold break-all">
+            {formatCurrency(stats.entradas)}
+          </p>
+          <p className="text-xs sm:text-sm mt-1 sm:mt-2 opacity-90">
             Média: {formatCurrency(stats.avgEntrada)}
           </p>
         </div>
 
         {/* Card: Saídas */}
-        <div className="bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl shadow-lg p-4 sm:p-6 text-white">
-          <div className="flex items-center justify-between mb-2">
-            <ArrowDownCircle className="w-8 h-8 opacity-80" />
+        <div className="bg-gradient-to-br from-red-500 to-pink-600 rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-4 lg:p-6 text-white">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 mb-2">
+            <ArrowDownCircle className="w-6 h-6 sm:w-8 sm:h-8 opacity-80" />
             <span className="text-xs sm:text-sm font-semibold opacity-90">Saídas</span>
           </div>
-          <p className="text-2xl sm:text-3xl font-bold">{formatCurrency(stats.saidas)}</p>
-          <p className="text-xs sm:text-sm mt-2 opacity-90">
+          <p className="text-xl sm:text-2xl lg:text-3xl font-bold break-all">
+            {formatCurrency(stats.saidas)}
+          </p>
+          <p className="text-xs sm:text-sm mt-1 sm:mt-2 opacity-90">
             Média: {formatCurrency(stats.avgSaida)}
           </p>
         </div>
@@ -243,43 +247,47 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
         <div
           className={`bg-gradient-to-br ${
             stats.saldo >= 0 ? 'from-blue-500 to-indigo-600' : 'from-orange-500 to-red-600'
-          } rounded-2xl shadow-lg p-4 sm:p-6 text-white`}
+          } rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-4 lg:p-6 text-white`}
         >
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 mb-2">
             {stats.saldo >= 0 ? (
-              <TrendingUp className="w-8 h-8 opacity-80" />
+              <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 opacity-80" />
             ) : (
-              <TrendingDown className="w-8 h-8 opacity-80" />
+              <TrendingDown className="w-6 h-6 sm:w-8 sm:h-8 opacity-80" />
             )}
             <span className="text-xs sm:text-sm font-semibold opacity-90">Saldo</span>
           </div>
-          <p className="text-2xl sm:text-3xl font-bold">{formatCurrency(stats.saldo)}</p>
-          <p className="text-xs sm:text-sm mt-2 opacity-90">
+          <p className="text-xl sm:text-2xl lg:text-3xl font-bold break-all">
+            {formatCurrency(stats.saldo)}
+          </p>
+          <p className="text-xs sm:text-sm mt-1 sm:mt-2 opacity-90">
             {stats.saldo >= 0 ? 'Positivo' : 'Negativo'}
           </p>
         </div>
 
         {/* Card: Maior Gasto */}
-        <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl shadow-lg p-4 sm:p-6 text-white">
-          <div className="flex items-center justify-between mb-2">
-            <DollarSign className="w-8 h-8 opacity-80" />
+        <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-4 lg:p-6 text-white">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 mb-2">
+            <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 opacity-80" />
             <span className="text-xs sm:text-sm font-semibold opacity-90">Maior Gasto</span>
           </div>
-          <p className="text-2xl sm:text-3xl font-bold">{formatCurrency(stats.maiorGasto)}</p>
-          <p className="text-xs sm:text-sm mt-2 opacity-90">Transação única</p>
+          <p className="text-xl sm:text-2xl lg:text-3xl font-bold break-all">
+            {formatCurrency(stats.maiorGasto)}
+          </p>
+          <p className="text-xs sm:text-sm mt-1 sm:mt-2 opacity-90">Transação única</p>
         </div>
       </div>
 
       {/* Gráficos */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Gráfico: Gastos por Categoria */}
-        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
-          <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <Wallet className="w-5 h-5 text-purple-600" />
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
+          <h3 className="text-base sm:text-lg font-bold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
+            <Wallet className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
             Gastos por Categoria
           </h3>
           {categoryData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
                   data={categoryData}
@@ -307,20 +315,20 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[300px] flex items-center justify-center text-gray-400">
+            <div className="h-[250px] flex items-center justify-center text-gray-400 text-sm">
               <p>Sem dados de categorias</p>
             </div>
           )}
         </div>
 
         {/* Gráfico: Gastos por Método */}
-        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
-          <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-purple-600" />
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
+          <h3 className="text-base sm:text-lg font-bold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
+            <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
             Gastos por Método de Pagamento
           </h3>
           {paymentMethodData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
                   data={paymentMethodData}
@@ -348,20 +356,20 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[300px] flex items-center justify-center text-gray-400">
+            <div className="h-[250px] flex items-center justify-center text-gray-400 text-sm">
               <p>Sem dados de métodos</p>
             </div>
           )}
         </div>
 
         {/* Gráfico Combinado: Entradas vs Saídas + Evolução do Saldo */}
-        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 lg:col-span-2">
-          <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-purple-600" />
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 lg:col-span-2">
+          <h3 className="text-base sm:text-lg font-bold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
             Evolução Financeira: Entradas, Saídas e Saldo
           </h3>
           {timelineData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={350}>
+            <ResponsiveContainer width="100%" height={300}>
               <ComposedChart
                 data={timelineData.map((d) => ({
                   ...d,
@@ -400,7 +408,7 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
               </ComposedChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[350px] flex items-center justify-center text-gray-400">
+            <div className="h-[300px] flex items-center justify-center text-gray-400 text-sm">
               <p>Sem dados de evolução</p>
             </div>
           )}
