@@ -371,10 +371,15 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
           {timelineData.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <ComposedChart
-                data={timelineData.map((d) => ({
-                  ...d,
-                  saldo: d.entradas - d.saidas,
-                }))}
+                data={timelineData.reduce((acc, d) => {
+                  const saldoMes = d.entradas - d.saidas;
+                  const ultimoSaldo = acc.length > 0 ? acc[acc.length - 1].saldo : 0;
+                  acc.push({
+                    ...d,
+                    saldo: ultimoSaldo + saldoMes,
+                  });
+                  return acc;
+                }, [] as Array<typeof timelineData[0] & { saldo: number }>)}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis
