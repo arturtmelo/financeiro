@@ -379,7 +379,7 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
                     saldo: ultimoSaldo + saldoMes,
                   });
                   return acc;
-                }, [] as Array<typeof timelineData[0] & { saldo: number }>)}
+                }, [] as Array<(typeof timelineData)[0] & { saldo: number }>)}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis
