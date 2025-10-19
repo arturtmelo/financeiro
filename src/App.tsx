@@ -172,9 +172,7 @@ function App() {
                 <Wallet className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
-                  Financeiro
-                </h1>
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">Financeiro</h1>
               </div>
             </div>
 

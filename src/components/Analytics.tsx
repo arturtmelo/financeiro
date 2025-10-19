@@ -3,9 +3,8 @@ import { Transaction } from '../types';
 import {
   PieChart,
   Pie,
-  BarChart,
+  ComposedChart,
   Bar,
-  LineChart,
   Line,
   XAxis,
   YAxis,
@@ -243,9 +242,7 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
         {/* Card: Saldo */}
         <div
           className={`bg-gradient-to-br ${
-            stats.saldo >= 0
-              ? 'from-blue-500 to-indigo-600'
-              : 'from-orange-500 to-red-600'
+            stats.saldo >= 0 ? 'from-blue-500 to-indigo-600' : 'from-orange-500 to-red-600'
           } rounded-2xl shadow-lg p-4 sm:p-6 text-white`}
         >
           <div className="flex items-center justify-between mb-2">
@@ -289,9 +286,7 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, percent }: any) =>
-                    `${name}: ${(percent * 100).toFixed(0)}%`
-                  }
+                  label={({ name, percent }: any) => `${name}: ${(percent * 100).toFixed(0)}%`}
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
@@ -332,9 +327,7 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, percent }: any) =>
-                    `${name}: ${(percent * 100).toFixed(0)}%`
-                  }
+                  label={({ name, percent }: any) => `${name}: ${(percent * 100).toFixed(0)}%`}
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
@@ -361,25 +354,27 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
           )}
         </div>
 
-        {/* Gráfico: Entradas vs Saídas */}
+        {/* Gráfico Combinado: Entradas vs Saídas + Evolução do Saldo */}
         <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 lg:col-span-2">
           <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-purple-600" />
-            Evolução: Entradas vs Saídas
+            Evolução Financeira: Entradas, Saídas e Saldo
           </h3>
           {timelineData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={timelineData}>
+            <ResponsiveContainer width="100%" height={350}>
+              <ComposedChart
+                data={timelineData.map((d) => ({
+                  ...d,
+                  saldo: d.entradas - d.saidas,
+                }))}
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis
                   dataKey="month"
                   tickFormatter={formatMonthLabel}
                   style={{ fontSize: '12px' }}
                 />
-                <YAxis
-                  tickFormatter={(value) => `R$ ${value}`}
-                  style={{ fontSize: '12px' }}
-                />
+                <YAxis tickFormatter={(value) => `R$ ${value}`} style={{ fontSize: '12px' }} />
                 <Tooltip
                   formatter={(value: number) => formatCurrency(value)}
                   labelFormatter={formatMonthLabel}
@@ -393,63 +388,19 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
                 <Legend />
                 <Bar dataKey="entradas" fill="#10b981" name="Entradas" radius={[8, 8, 0, 0]} />
                 <Bar dataKey="saidas" fill="#ef4444" name="Saídas" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="h-[300px] flex items-center justify-center text-gray-400">
-              <p>Sem dados temporais</p>
-            </div>
-          )}
-        </div>
-
-        {/* Gráfico: Linha de Evolução do Saldo */}
-        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 lg:col-span-2">
-          <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-purple-600" />
-            Evolução do Saldo
-          </h3>
-          {timelineData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart
-                data={timelineData.map((d) => ({
-                  ...d,
-                  saldo: d.entradas - d.saidas,
-                }))}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis
-                  dataKey="month"
-                  tickFormatter={formatMonthLabel}
-                  style={{ fontSize: '12px' }}
-                />
-                <YAxis
-                  tickFormatter={(value) => `R$ ${value}`}
-                  style={{ fontSize: '12px' }}
-                />
-                <Tooltip
-                  formatter={(value: number) => formatCurrency(value)}
-                  labelFormatter={formatMonthLabel}
-                  contentStyle={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    border: 'none',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                  }}
-                />
-                <Legend />
                 <Line
                   type="monotone"
                   dataKey="saldo"
                   stroke="#8b5cf6"
                   strokeWidth={3}
                   name="Saldo"
-                  dot={{ fill: '#8b5cf6', r: 4 }}
-                  activeDot={{ r: 6 }}
+                  dot={{ fill: '#8b5cf6', r: 5 }}
+                  activeDot={{ r: 7 }}
                 />
-              </LineChart>
+              </ComposedChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[300px] flex items-center justify-center text-gray-400">
+            <div className="h-[350px] flex items-center justify-center text-gray-400">
               <p>Sem dados de evolução</p>
             </div>
           )}
@@ -460,4 +411,3 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
 };
 
 export default Analytics;
-
