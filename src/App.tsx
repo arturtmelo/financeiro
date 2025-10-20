@@ -256,7 +256,7 @@ function App() {
       )}
 
       {/* Botão FAB: Nova Transação (apenas na aba Visão Geral) */}
-      {activeTab === 'overview' && (
+      {
         <button
           onClick={() => {
             setShowForm(!showForm);
@@ -277,7 +277,7 @@ function App() {
         >
           {showForm ? <X className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
         </button>
-      )}
+      }
 
       {/* Botão Voltar ao Topo */}
       {showScrollTop && (
