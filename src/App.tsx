@@ -280,12 +280,13 @@ function App() {
             }
           }
         }}
-        className={`fixed bottom-6 right-6 p-3 ${
+        className={`fixed bottom-6 right-6 p-4 ${
           showForm && activeTab === 'overview'
             ? 'bg-red-600 hover:bg-red-700'
-            : 'bg-gray-900 hover:bg-green-600'
-        } text-white rounded-full shadow-lg transition-all duration-200 ease-in-out transform hover:scale-[0.93] z-[1000]`}
+            : 'bg-green-600 hover:bg-green-700'
+        } text-white rounded-full shadow-xl transition-all duration-200 ease-in-out transform hover:scale-110 active:scale-95 z-[9999]`}
         title={showForm && activeTab === 'overview' ? 'Fechar formulário' : 'Nova transação'}
+        style={{ display: 'block' }}
       >
         {showForm && activeTab === 'overview' ? (
           <X className="w-6 h-6" />
