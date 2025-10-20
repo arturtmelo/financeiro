@@ -118,15 +118,7 @@ export const deleteTransaction = async (transactionId: string, userId: string): 
 
 // ==================== MÉTODOS DE PAGAMENTO ====================
 
-const DEFAULT_METHODS = [
-  'Pix',
-  'Cartão Santander',
-  'Cartão Visa',
-  'Dinheiro',
-  'Débito',
-  'Transferência',
-  'Outro',
-];
+const DEFAULT_METHODS = ['Pix', 'Cartão Santander', 'Dinheiro', 'Outro'];
 
 /**
  * Carregar métodos de pagamento do usuário

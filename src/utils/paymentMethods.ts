@@ -2,15 +2,7 @@ const getStorageKey = (userId: string): string => {
   return `financeiro_payment_methods_${userId}`;
 };
 
-const DEFAULT_METHODS = [
-  'Pix',
-  'Cartão Santander',
-  'Cartão Visa',
-  'Dinheiro',
-  'Débito',
-  'Transferência',
-  'Outro',
-];
+const DEFAULT_METHODS = ['Pix', 'Cartão Santander', 'Dinheiro', 'Outro'];
 
 export const loadPaymentMethods = (userId: string): string[] => {
   const key = getStorageKey(userId);
