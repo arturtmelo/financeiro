@@ -255,19 +255,10 @@ function App() {
         />
       )}
 
-      {/* Botão FAB: Nova Transação */}
-      <button
-        onClick={() => {
-          // Se estiver na aba Análises, muda para Visão Geral
-          if (activeTab === 'analytics') {
-            setActiveTab('overview');
-            setShowForm(true);
-            // Scroll para o formulário após um delay maior para dar tempo de mudar a aba
-            setTimeout(() => {
-              formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 150);
-          } else {
-            // Se já estiver na aba Visão Geral, alterna o formulário
+      {/* Botão FAB: Nova Transação (apenas na aba Visão Geral) */}
+      {activeTab === 'overview' && (
+        <button
+          onClick={() => {
             setShowForm(!showForm);
             // Scroll para o formulário após um pequeno delay
             if (!showForm) {
@@ -278,22 +269,15 @@ function App() {
               // Se está fechando, volta ao topo
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }
-          }
-        }}
-        className={`fixed bottom-6 right-6 p-4 ${
-          showForm && activeTab === 'overview'
-            ? 'bg-red-600 hover:bg-red-700'
-            : 'bg-green-600 hover:bg-green-700'
-        } text-white rounded-full shadow-xl transition-all duration-200 ease-in-out transform hover:scale-110 active:scale-95 z-[9999]`}
-        title={showForm && activeTab === 'overview' ? 'Fechar formulário' : 'Nova transação'}
-        style={{ display: 'block' }}
-      >
-        {showForm && activeTab === 'overview' ? (
-          <X className="w-6 h-6" />
-        ) : (
-          <Plus className="w-6 h-6" />
-        )}
-      </button>
+          }}
+          className={`fixed bottom-6 right-6 p-4 ${
+            showForm ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-900 hover:bg-green-600'
+          } text-white rounded-full shadow-lg transition-all duration-200 ease-in-out transform hover:scale-[0.93] z-[1000]`}
+          title={showForm ? 'Fechar formulário' : 'Nova transação'}
+        >
+          {showForm ? <X className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
+        </button>
+      )}
 
       {/* Botão Voltar ao Topo */}
       {showScrollTop && (
