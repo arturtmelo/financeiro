@@ -148,8 +148,36 @@ function App() {
   // Mostrar loading enquanto verifica autenticação
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-white text-xl">Carregando...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-500 to-red-500">
+        <div className="flex flex-col items-center gap-6">
+          {/* Spinner animado */}
+          <div className="relative">
+            {/* Círculo externo */}
+            <div className="w-20 h-20 border-4 border-white/20 rounded-full"></div>
+            {/* Círculo animado */}
+            <div className="absolute top-0 left-0 w-20 h-20 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+            {/* Círculo interno pulsante */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white/30 rounded-full animate-pulse"></div>
+          </div>
+          {/* Texto */}
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-white text-xl font-bold animate-pulse">Carregando</p>
+            <div className="flex gap-1">
+              <span
+                className="w-2 h-2 bg-white rounded-full animate-bounce"
+                style={{ animationDelay: '0ms' }}
+              ></span>
+              <span
+                className="w-2 h-2 bg-white rounded-full animate-bounce"
+                style={{ animationDelay: '150ms' }}
+              ></span>
+              <span
+                className="w-2 h-2 bg-white rounded-full animate-bounce"
+                style={{ animationDelay: '300ms' }}
+              ></span>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
