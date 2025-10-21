@@ -366,7 +366,7 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
         <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 lg:col-span-2">
           <h3 className="text-base sm:text-lg font-bold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
             <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
-            Evolução Financeira: Entradas, Saídas e Saldo
+            Evolução: Entradas, Saídas e Saldo
           </h3>
           {timelineData.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
