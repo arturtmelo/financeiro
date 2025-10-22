@@ -36,10 +36,47 @@ const TransactionForm = ({
   const [date, setDate] = useState(getLocalDateString());
   const [category, setCategory] = useState<string>('');
 
+  // Função para formatar valor com separadores de milhar e vírgula decimal
+  const formatCurrencyInput = (value: string): string => {
+    // Remove tudo que não é número
+    const numbersOnly = value.replace(/\D/g, '');
+
+    if (!numbersOnly) return '';
+
+    // Converte para número e divide por 100 para ter os centavos
+    const numberValue = parseInt(numbersOnly) / 100;
+
+    // Formata com separadores de milhar e vírgula decimal
+    return numberValue.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  };
+
+  // Função para converter valor formatado para número
+  const parseFormattedValue = (formattedValue: string): number => {
+    if (!formattedValue) return 0;
+    // Remove pontos de milhar e substitui vírgula por ponto
+    const cleanValue = formattedValue.replace(/\./g, '').replace(',', '.');
+    return parseFloat(cleanValue) || 0;
+  };
+
+  // Handler para mudança no campo de valor
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    const formatted = formatCurrencyInput(inputValue);
+    setAmount(formatted);
+  };
+
   useEffect(() => {
     if (editingTransaction) {
       setDescription(editingTransaction.description);
-      setAmount(editingTransaction.amount.toString());
+      // Formata o valor ao editar
+      const formatted = editingTransaction.amount.toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+      setAmount(formatted);
       setType(editingTransaction.type);
       setPaymentMethod(editingTransaction.paymentMethod);
       setDate(editingTransaction.date);
@@ -64,7 +101,9 @@ const TransactionForm = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!description.trim() || !amount || parseFloat(amount) <= 0) {
+    const numericAmount = parseFormattedValue(amount);
+
+    if (!description.trim() || !amount || numericAmount <= 0) {
       alert('Por favor, preencha todos os campos obrigatórios corretamente.');
       return;
     }
@@ -72,7 +111,7 @@ const TransactionForm = ({
     const transaction: Transaction = {
       id: editingTransaction?.id || Date.now().toString(),
       description: description.trim(),
-      amount: parseFloat(amount),
+      amount: numericAmount,
       type,
       paymentMethod,
       date,
@@ -135,11 +174,10 @@ const TransactionForm = ({
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Valor (R$) *</label>
             <input
-              type="number"
-              step="0.01"
-              min="0"
+              type="text"
+              inputMode="decimal"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={handleAmountChange}
               placeholder="0,00"
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors"
               required
