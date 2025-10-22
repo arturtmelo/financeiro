@@ -172,11 +172,11 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
   };
 
   const periodLabels: Record<PeriodFilter, string> = {
-    week: 'Últimos 7 dias',
-    month: 'Último mês',
-    quarter: 'Últimos 3 meses',
-    year: 'Último ano',
-    all: 'Todos os períodos',
+    week: 'Últimos 7 Dias',
+    month: 'Último Mês',
+    quarter: 'Últimos 3 Meses',
+    year: 'Último Ano',
+    all: 'Tudo',
   };
 
   return (
