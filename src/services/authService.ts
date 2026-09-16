@@ -3,6 +3,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
+  sendPasswordResetEmail,
   User as FirebaseUser,
 } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
@@ -101,6 +102,35 @@ export const loginUser = async (
       message = 'Usuário não encontrado.';
     } else if (error.code === 'auth/wrong-password') {
       message = 'Senha incorreta.';
+    } else if (error.code === 'auth/invalid-email') {
+      message = 'Email inválido.';
+    } else if (error.code === 'auth/too-many-requests') {
+      message = 'Muitas tentativas. Tente novamente mais tarde.';
+    }
+
+    return { success: false, message };
+  }
+};
+
+/**
+ * Enviar email de redefinição de senha
+ */
+export const resetPassword = async (
+  email: string
+): Promise<{ success: boolean; message: string }> => {
+  try {
+    await sendPasswordResetEmail(auth, email);
+    return {
+      success: true,
+      message: 'Enviamos um link de redefinição de senha para o seu email.',
+    };
+  } catch (error: any) {
+    console.error('Erro ao enviar email de redefinição:', error);
+
+    let message = 'Erro ao enviar email de redefinição. Tente novamente.';
+
+    if (error.code === 'auth/user-not-found') {
+      message = 'Não encontramos nenhuma conta com este email.';
     } else if (error.code === 'auth/invalid-email') {
       message = 'Email inválido.';
     } else if (error.code === 'auth/too-many-requests') {

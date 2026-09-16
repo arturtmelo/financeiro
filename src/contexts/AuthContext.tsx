@@ -5,20 +5,25 @@ import {
   loginUser as authLoginUser,
   registerUser as authRegisterUser,
   logoutUser as authLogoutUser,
+  resetPassword as authResetPassword,
   firebaseUserToUser,
 } from '../services/authService';
 import { auth } from '../config/firebase';
+import { DEMO_USER } from '../services/demoDataService';
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isDemo: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; message: string }>;
   register: (
     name: string,
     email: string,
     password: string
   ) => Promise<{ success: boolean; message: string }>;
+  resetPassword: (email: string) => Promise<{ success: boolean; message: string }>;
+  loginAsDemo: () => void;
   logout: () => void;
 }
 
@@ -37,19 +42,20 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
+  const [demoUser, setDemoUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Listener do Firebase Auth - detecta mudanças no estado de autenticação
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
+    const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
+      if (fbUser) {
         // Usuário logado - converter para nosso tipo User
-        const userData = await firebaseUserToUser(firebaseUser);
-        setUser(userData);
+        const userData = await firebaseUserToUser(fbUser);
+        setFirebaseUser(userData);
       } else {
         // Usuário deslogado
-        setUser(null);
+        setFirebaseUser(null);
       }
       setIsLoading(false);
     });
@@ -57,6 +63,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Cleanup
     return () => unsubscribe();
   }, []);
+
+  const user = demoUser ?? firebaseUser;
+  const isDemo = !!demoUser;
 
   const login = async (
     email: string,
@@ -77,7 +86,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return { success: result.success, message: result.message };
   };
 
+  const resetPassword = async (
+    email: string
+  ): Promise<{ success: boolean; message: string }> => {
+    return authResetPassword(email);
+  };
+
+  const loginAsDemo = () => {
+    setDemoUser(DEMO_USER);
+  };
+
   const logout = async () => {
+    if (demoUser) {
+      // Modo demo é apenas local - não há sessão do Firebase para encerrar
+      setDemoUser(null);
+      return;
+    }
     await authLogoutUser();
     // O onAuthStateChanged vai limpar o user automaticamente
   };
@@ -86,8 +110,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     user,
     isAuthenticated: !!user,
     isLoading,
+    isDemo,
     login,
     register,
+    resetPassword,
+    loginAsDemo,
     logout,
   };
 

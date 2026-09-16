@@ -5,8 +5,6 @@ import {
   addTransaction as addTransactionToFirestore,
   updateTransaction as updateTransactionInFirestore,
   deleteTransaction as deleteTransactionFromFirestore,
-} from './services/firestoreService';
-import {
   loadPaymentMethods,
   savePaymentMethods,
   loadCategories,
@@ -17,7 +15,8 @@ import {
   addBudget as addBudgetToFirestore,
   updateBudget as updateBudgetInFirestore,
   deleteBudget as deleteBudgetFromFirestore,
-} from './services/firestoreService';
+} from './services/dataService';
+import { resetDemoData } from './services/demoDataService';
 import { calculateBudgetProgress } from './utils/calculations';
 import { useAuth } from './contexts/AuthContext';
 import { useToast } from './contexts/ToastContext';
@@ -33,7 +32,7 @@ import Login from './components/Login';
 import { Wallet, ArrowUp, Plus, X, BarChart3, List, CreditCard, Tag } from 'lucide-react';
 
 function App() {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading, isDemo } = useAuth();
   const { showToast } = useToast();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [paymentMethods, setPaymentMethods] = useState<string[]>([]);
@@ -168,6 +167,18 @@ function App() {
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleResetDemoData = () => {
+    resetDemoData();
+    if (user) {
+      loadTransactions(user.id).then(setTransactions);
+      loadPaymentMethods(user.id).then(setPaymentMethods);
+      loadCategories(user.id).then(setCategories);
+      loadCategoryColors(user.id).then(setCategoryColors);
+      loadBudgets(user.id).then(setBudgets);
+    }
+    showToast('Dados demo reiniciados!', 'success');
   };
 
   const handleNewTransactionClick = () => {
@@ -310,6 +321,19 @@ function App() {
   return (
     <div id="top" className="min-h-screen pb-24 sm:pb-8">
       <Header />
+
+      {isDemo && (
+        <div className="bg-amber-500 text-amber-950 text-sm px-4 py-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center">
+          <span className="font-semibold">Modo Demo</span>
+          <span>— dados fictícios, nada é enviado ao servidor.</span>
+          <button
+            onClick={handleResetDemoData}
+            className="underline font-semibold hover:text-amber-800"
+          >
+            Reiniciar dados demo
+          </button>
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header */}
