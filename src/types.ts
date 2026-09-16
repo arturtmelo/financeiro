@@ -29,3 +29,18 @@ export interface MonthlyStats {
   balance: number;
   transactionCount: number;
 }
+
+export interface Budget {
+  id: string;
+  category: string;
+  limit: number;
+  alertThreshold?: number;
+}
+
+export interface BudgetProgressItem {
+  budget: Budget;
+  spent: number;
+  percentage: number;
+  isOverBudget: boolean;
+  isNearThreshold: boolean;
+}

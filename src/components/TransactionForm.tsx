@@ -35,22 +35,37 @@ const TransactionForm = ({
   const [paymentMethod, setPaymentMethod] = useState(paymentMethods[0] || '');
   const [date, setDate] = useState(getLocalDateString());
   const [category, setCategory] = useState<string>('');
+  const [error, setError] = useState('');
 
-  // Função para formatar valor com separadores de milhar e vírgula decimal
+  // Função para formatar valor com separadores de milhar
   const formatCurrencyInput = (value: string): string => {
-    // Remove tudo que não é número
-    const numbersOnly = value.replace(/\D/g, '');
+    // Converte ponto para vírgula (caso o usuário use ponto no teclado)
+    let cleaned = value.replace(/\./g, ',');
 
-    if (!numbersOnly) return '';
+    // Remove tudo exceto números e vírgula
+    cleaned = cleaned.replace(/[^\d,]/g, '');
 
-    // Converte para número e divide por 100 para ter os centavos
-    const numberValue = parseInt(numbersOnly) / 100;
+    // Garante apenas uma vírgula (mantém a primeira, remove as demais)
+    const parts = cleaned.split(',');
+    if (parts.length > 2) {
+      cleaned = parts[0] + ',' + parts.slice(1).join('');
+    }
 
-    // Formata com separadores de milhar e vírgula decimal
-    return numberValue.toLocaleString('pt-BR', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
+    // Limita a 2 casas decimais após a vírgula
+    if (parts.length === 2 && parts[1].length > 2) {
+      cleaned = parts[0] + ',' + parts[1].substring(0, 2);
+    }
+
+    // Separa parte inteira e decimal
+    const [integerPart, decimalPart] = cleaned.split(',');
+
+    if (!integerPart) return '';
+
+    // Formata a parte inteira com separadores de milhar
+    const formattedInteger = parseInt(integerPart).toLocaleString('pt-BR');
+
+    // Retorna com ou sem parte decimal
+    return decimalPart !== undefined ? `${formattedInteger},${decimalPart}` : formattedInteger;
   };
 
   // Função para converter valor formatado para número
@@ -64,6 +79,13 @@ const TransactionForm = ({
   // Handler para mudança no campo de valor
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
+
+    // Se o campo estiver vazio, limpa
+    if (!inputValue) {
+      setAmount('');
+      return;
+    }
+
     const formatted = formatCurrencyInput(inputValue);
     setAmount(formatted);
   };
@@ -104,9 +126,11 @@ const TransactionForm = ({
     const numericAmount = parseFormattedValue(amount);
 
     if (!description.trim() || !amount || numericAmount <= 0) {
-      alert('Por favor, preencha todos os campos obrigatórios corretamente.');
+      setError('Por favor, preencha todos os campos obrigatórios corretamente.');
       return;
     }
+
+    setError('');
 
     const transaction: Transaction = {
       id: editingTransaction?.id || Date.now().toString(),
@@ -132,9 +156,9 @@ const TransactionForm = ({
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8">
       <div className="flex items-center justify-between mb-4 sm:mb-6">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">
           {editingTransaction ? 'Editar Transação' : 'Nova Transação'}
         </h2>
       </div>
@@ -143,7 +167,7 @@ const TransactionForm = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Tipo */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Tipo *</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Tipo *</label>
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
@@ -151,7 +175,7 @@ const TransactionForm = ({
                 className={`py-3 px-4 rounded-xl font-semibold transition-all ${
                   type === 'entrada'
                     ? 'bg-green-500 text-white shadow-lg'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
                 Entrada
@@ -162,7 +186,7 @@ const TransactionForm = ({
                 className={`py-3 px-4 rounded-xl font-semibold transition-all ${
                   type === 'saida'
                     ? 'bg-red-500 text-white shadow-lg'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
                 Saída
@@ -172,27 +196,27 @@ const TransactionForm = ({
 
           {/* Valor */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Valor (R$) *</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Valor (R$) *</label>
             <input
               type="text"
               inputMode="decimal"
               value={amount}
               onChange={handleAmountChange}
-              placeholder="0,00"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors"
+              placeholder="Ex: 100 ou 100,50"
+              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 rounded-xl focus:border-purple-500 focus:outline-none transition-colors text-lg"
               required
             />
           </div>
 
           {/* Descrição */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Descrição *</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Descrição *</label>
             <input
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Ex: Compra no supermercado"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors"
+              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 rounded-xl focus:border-purple-500 focus:outline-none transition-colors"
               required
             />
           </div>
@@ -200,13 +224,13 @@ const TransactionForm = ({
           {/* Método de Pagamento */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-semibold text-gray-700">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
                 Método de Pagamento *
               </label>
               <button
                 type="button"
                 onClick={onManagePaymentMethods}
-                className="text-sm text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1"
+                className="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium flex items-center gap-1"
               >
                 <Settings className="w-4 h-4" />
                 Gerenciar
@@ -216,7 +240,7 @@ const TransactionForm = ({
               <select
                 value={paymentMethod}
                 onChange={(e) => setPaymentMethod(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors bg-white"
+                className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-purple-500 focus:outline-none transition-colors bg-white dark:bg-gray-900 dark:text-gray-100"
                 required
               >
                 {paymentMethods.map((method) => (
@@ -226,12 +250,12 @@ const TransactionForm = ({
                 ))}
               </select>
             ) : (
-              <div className="p-4 bg-yellow-50 border-2 border-yellow-200 rounded-xl text-sm text-yellow-800">
+              <div className="p-4 bg-yellow-50 dark:bg-yellow-950 border-2 border-yellow-200 dark:border-yellow-900 rounded-xl text-sm text-yellow-800 dark:text-yellow-300">
                 Nenhum método cadastrado.{' '}
                 <button
                   type="button"
                   onClick={onManagePaymentMethods}
-                  className="font-semibold underline hover:text-yellow-900"
+                  className="font-semibold underline hover:text-yellow-900 dark:hover:text-yellow-200"
                 >
                   Clique aqui para adicionar
                 </button>
@@ -241,12 +265,12 @@ const TransactionForm = ({
 
           {/* Data */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Data *</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Data *</label>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors"
+              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 rounded-xl focus:border-purple-500 focus:outline-none transition-colors"
               required
             />
           </div>
@@ -254,13 +278,13 @@ const TransactionForm = ({
           {/* Categoria */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-semibold text-gray-700">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
                 Categoria (opcional)
               </label>
               <button
                 type="button"
                 onClick={onManageCategories}
-                className="text-sm text-green-600 hover:text-green-700 font-medium flex items-center gap-1"
+                className="text-sm text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 font-medium flex items-center gap-1"
               >
                 <Settings className="w-4 h-4" />
                 Gerenciar
@@ -270,7 +294,7 @@ const TransactionForm = ({
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors bg-white"
+                className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-purple-500 focus:outline-none transition-colors bg-white dark:bg-gray-900 dark:text-gray-100"
               >
                 <option value="">Selecione uma categoria</option>
                 {categories.map((cat) => (
@@ -280,12 +304,12 @@ const TransactionForm = ({
                 ))}
               </select>
             ) : (
-              <div className="p-4 bg-yellow-50 border-2 border-yellow-200 rounded-xl text-sm text-yellow-800">
+              <div className="p-4 bg-yellow-50 dark:bg-yellow-950 border-2 border-yellow-200 dark:border-yellow-900 rounded-xl text-sm text-yellow-800 dark:text-yellow-300">
                 Nenhuma categoria cadastrada.{' '}
                 <button
                   type="button"
                   onClick={onManageCategories}
-                  className="font-semibold underline hover:text-yellow-900"
+                  className="font-semibold underline hover:text-yellow-900 dark:hover:text-yellow-200"
                 >
                   Clique aqui para adicionar
                 </button>
@@ -294,12 +318,21 @@ const TransactionForm = ({
           </div>
         </div>
 
+        {error && (
+          <div
+            role="alert"
+            className="p-4 bg-red-50 dark:bg-red-950 border-2 border-red-200 dark:border-red-900 rounded-xl text-sm text-red-700 dark:text-red-300"
+          >
+            {error}
+          </div>
+        )}
+
         {/* Botões */}
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-end pt-4">
           <button
             type="button"
             onClick={onCancel}
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-colors order-2 sm:order-1"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-xl transition-colors order-2 sm:order-1"
           >
             <X className="w-5 h-5" />
             Cancelar

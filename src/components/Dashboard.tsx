@@ -1,21 +1,25 @@
-import { Transaction } from '../types';
+import { Transaction, Budget } from '../types';
 import {
   calculateMonthlyStats,
   formatCurrency,
   getPaymentMethodStats,
 } from '../utils/calculations';
 import { TrendingUp, TrendingDown, Wallet, CreditCard } from 'lucide-react';
+import BudgetProgress from './BudgetProgress';
 
 interface DashboardProps {
   transactions: Transaction[];
+  budgets: Budget[];
+  onManageBudgets: () => void;
 }
 
-const Dashboard = ({ transactions }: DashboardProps) => {
+const Dashboard = ({ transactions, budgets, onManageBudgets }: DashboardProps) => {
   const stats = calculateMonthlyStats(transactions);
   const paymentStats = getPaymentMethodStats(transactions);
 
   return (
     <div className="mb-8 space-y-6">
+      <BudgetProgress transactions={transactions} budgets={budgets} onManageBudgets={onManageBudgets} />
       {/* Cards de Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
@@ -46,8 +50,8 @@ const Dashboard = ({ transactions }: DashboardProps) => {
 
       {/* Estatísticas por Método de Pagamento */}
       {paymentStats.length > 0 && (
-        <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6">
-          <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-4 sm:p-6">
+          <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">
             Total por Método de Pagamento
           </h3>
           <div className="space-y-3">
@@ -64,12 +68,12 @@ const Dashboard = ({ transactions }: DashboardProps) => {
                     <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-xs sm:text-sm flex-shrink-0">
                       {index + 1}
                     </div>
-                    <span className="font-medium text-gray-700 text-sm sm:text-base">
+                    <span className="font-medium text-gray-700 dark:text-gray-300 text-sm sm:text-base">
                       {stat.method}
                     </span>
                   </div>
                   <div className="flex items-center gap-3 sm:gap-4 ml-10 sm:ml-0">
-                    <div className="w-24 sm:w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="w-24 sm:w-32 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                       <div
                         className={`h-full ${
                           isPositive
@@ -117,11 +121,11 @@ const StatCard = ({ title, value, icon, color }: StatCardProps) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-6 transform transition-all hover:scale-105">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 transform transition-all hover:scale-105">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-gray-600 text-sm font-medium mb-2">{title}</p>
-          <p className="text-2xl font-bold text-gray-800">{value}</p>
+          <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-2">{title}</p>
+          <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{value}</p>
         </div>
         <div className={`bg-gradient-to-br ${colorClasses[color]} p-3 rounded-xl text-white`}>
           {icon}

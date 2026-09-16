@@ -9,7 +9,7 @@ import {
   orderBy,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import { Transaction } from '../types';
+import { Transaction, Budget } from '../types';
 
 // ==================== TRANSAÇÕES ====================
 
@@ -186,6 +186,115 @@ export const saveCategories = async (categories: string[], userId: string): Prom
     await setDoc(categoriesRef, { categories });
   } catch (error) {
     console.error('Erro ao salvar categorias:', error);
+    throw error;
+  }
+};
+
+// ==================== CORES DAS CATEGORIAS ====================
+
+/**
+ * Carregar cores das categorias do usuário
+ */
+export const loadCategoryColors = async (userId: string): Promise<Record<string, string>> => {
+  try {
+    const colorsDoc = await getDoc(doc(db, 'users', userId, 'settings', 'categoryColors'));
+
+    if (colorsDoc.exists()) {
+      return colorsDoc.data().colors || {};
+    }
+
+    return {};
+  } catch (error) {
+    console.error('Erro ao carregar cores das categorias:', error);
+    return {};
+  }
+};
+
+/**
+ * Salvar cores das categorias do usuário
+ */
+export const saveCategoryColors = async (
+  colors: Record<string, string>,
+  userId: string
+): Promise<void> => {
+  try {
+    const colorsRef = doc(db, 'users', userId, 'settings', 'categoryColors');
+    await setDoc(colorsRef, { colors });
+  } catch (error) {
+    console.error('Erro ao salvar cores das categorias:', error);
+    throw error;
+  }
+};
+
+// ==================== ORÇAMENTOS ====================
+
+/**
+ * Carregar orçamentos do usuário
+ */
+export const loadBudgets = async (userId: string): Promise<Budget[]> => {
+  try {
+    const budgetsRef = collection(db, 'users', userId, 'budgets');
+    const querySnapshot = await getDocs(budgetsRef);
+
+    const budgets: Budget[] = [];
+    querySnapshot.forEach((doc) => {
+      budgets.push(doc.data() as Budget);
+    });
+
+    return budgets;
+  } catch (error) {
+    console.error('Erro ao carregar orçamentos:', error);
+    return [];
+  }
+};
+
+/**
+ * Adicionar um orçamento
+ */
+export const addBudget = async (budget: Budget, userId: string): Promise<void> => {
+  try {
+    const budgetRef = doc(db, 'users', userId, 'budgets', budget.id);
+
+    const budgetData: any = { ...budget };
+    if (budgetData.alertThreshold === undefined) {
+      delete budgetData.alertThreshold;
+    }
+
+    await setDoc(budgetRef, budgetData);
+  } catch (error) {
+    console.error('Erro ao adicionar orçamento:', error);
+    throw error;
+  }
+};
+
+/**
+ * Atualizar um orçamento
+ */
+export const updateBudget = async (budget: Budget, userId: string): Promise<void> => {
+  try {
+    const budgetRef = doc(db, 'users', userId, 'budgets', budget.id);
+
+    const budgetData: any = { ...budget };
+    if (budgetData.alertThreshold === undefined) {
+      delete budgetData.alertThreshold;
+    }
+
+    await setDoc(budgetRef, budgetData);
+  } catch (error) {
+    console.error('Erro ao atualizar orçamento:', error);
+    throw error;
+  }
+};
+
+/**
+ * Deletar um orçamento
+ */
+export const deleteBudget = async (budgetId: string, userId: string): Promise<void> => {
+  try {
+    const budgetRef = doc(db, 'users', userId, 'budgets', budgetId);
+    await deleteDoc(budgetRef);
+  } catch (error) {
+    console.error('Erro ao deletar orçamento:', error);
     throw error;
   }
 };

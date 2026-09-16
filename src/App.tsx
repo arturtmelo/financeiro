@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Transaction } from './types';
+import { Transaction, Budget } from './types';
 import {
   loadTransactions,
   addTransaction as addTransactionToFirestore,
@@ -11,27 +11,40 @@ import {
   savePaymentMethods,
   loadCategories,
   saveCategories,
+  loadCategoryColors,
+  saveCategoryColors,
+  loadBudgets,
+  addBudget as addBudgetToFirestore,
+  updateBudget as updateBudgetInFirestore,
+  deleteBudget as deleteBudgetFromFirestore,
 } from './services/firestoreService';
+import { calculateBudgetProgress } from './utils/calculations';
 import { useAuth } from './contexts/AuthContext';
+import { useToast } from './contexts/ToastContext';
 import Header from './components/Header';
 import Dashboard from './components/Dashboard';
 import Analytics from './components/Analytics';
 import TransactionForm from './components/TransactionForm';
 import TransactionList from './components/TransactionList';
-import PaymentMethodsManager from './components/PaymentMethodsManager';
-import CategoriesManager from './components/CategoriesManager';
+import ListManager from './components/ListManager';
+import BudgetManager from './components/BudgetManager';
+import BottomNav from './components/BottomNav';
 import Login from './components/Login';
-import { Wallet, ArrowUp, Plus, X, BarChart3, List } from 'lucide-react';
+import { Wallet, ArrowUp, Plus, X, BarChart3, List, CreditCard, Tag } from 'lucide-react';
 
 function App() {
   const { user, isAuthenticated, isLoading } = useAuth();
+  const { showToast } = useToast();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [paymentMethods, setPaymentMethods] = useState<string[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
+  const [categoryColors, setCategoryColors] = useState<Record<string, string>>({});
+  const [budgets, setBudgets] = useState<Budget[]>([]);
   const [activeTab, setActiveTab] = useState<'overview' | 'analytics'>('overview');
   const [showForm, setShowForm] = useState(false);
   const [showPaymentMethodsManager, setShowPaymentMethodsManager] = useState(false);
   const [showCategoriesManager, setShowCategoriesManager] = useState(false);
+  const [showBudgetManager, setShowBudgetManager] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
@@ -52,11 +65,23 @@ function App() {
       loadCategories(user.id).then((cats) => {
         setCategories(cats);
       });
+
+      // Carregar cores das categorias do Firestore
+      loadCategoryColors(user.id).then((colors) => {
+        setCategoryColors(colors);
+      });
+
+      // Carregar orçamentos do Firestore
+      loadBudgets(user.id).then((loadedBudgets) => {
+        setBudgets(loadedBudgets);
+      });
     } else {
       // Limpar dados quando usuário deslogar
       setTransactions([]);
       setPaymentMethods([]);
       setCategories([]);
+      setCategoryColors({});
+      setBudgets([]);
     }
   }, [user]);
 
@@ -69,15 +94,31 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const checkBudgetAlert = (transaction: Transaction, updatedTransactions: Transaction[]) => {
+    if (transaction.type !== 'saida' || !transaction.category) return;
+    const relevantBudget = budgets.find((b) => b.category === transaction.category);
+    if (!relevantBudget) return;
+
+    const [progress] = calculateBudgetProgress(updatedTransactions, [relevantBudget]);
+    if (progress.isOverBudget) {
+      showToast(`Você ultrapassou o orçamento de "${relevantBudget.category}"!`, 'error');
+    } else if (progress.isNearThreshold) {
+      showToast(`Você está perto do limite de orçamento de "${relevantBudget.category}"`, 'info');
+    }
+  };
+
   const handleAddTransaction = async (transaction: Transaction) => {
     if (!user) return;
     try {
       await addTransactionToFirestore(transaction, user.id);
-      setTransactions((prev) => [...prev, transaction]);
+      const updatedTransactions = [...transactions, transaction];
+      setTransactions(updatedTransactions);
       setShowForm(false);
+      showToast('Transação adicionada com sucesso!', 'success');
+      checkBudgetAlert(transaction, updatedTransactions);
     } catch (error) {
       console.error('Erro ao adicionar transação:', error);
-      alert('Erro ao adicionar transação. Tente novamente.');
+      showToast('Erro ao adicionar transação. Tente novamente.', 'error');
     }
   };
 
@@ -85,12 +126,17 @@ function App() {
     if (!user) return;
     try {
       await updateTransactionInFirestore(transaction, user.id);
-      setTransactions((prev) => prev.map((t) => (t.id === transaction.id ? transaction : t)));
+      const updatedTransactions = transactions.map((t) =>
+        t.id === transaction.id ? transaction : t
+      );
+      setTransactions(updatedTransactions);
       setEditingTransaction(null);
       setShowForm(false);
+      showToast('Transação atualizada com sucesso!', 'success');
+      checkBudgetAlert(transaction, updatedTransactions);
     } catch (error) {
       console.error('Erro ao atualizar transação:', error);
-      alert('Erro ao atualizar transação. Tente novamente.');
+      showToast('Erro ao atualizar transação. Tente novamente.', 'error');
     }
   };
 
@@ -99,9 +145,10 @@ function App() {
     try {
       await deleteTransactionFromFirestore(id, user.id);
       setTransactions((prev) => prev.filter((t) => t.id !== id));
+      showToast('Transação excluída com sucesso!', 'success');
     } catch (error) {
       console.error('Erro ao deletar transação:', error);
-      alert('Erro ao deletar transação. Tente novamente.');
+      showToast('Erro ao deletar transação. Tente novamente.', 'error');
     }
   };
 
@@ -123,14 +170,39 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleNewTransactionClick = () => {
+    // Se estiver na aba Análises, muda para Visão Geral
+    if (activeTab === 'analytics') {
+      setActiveTab('overview');
+      setShowForm(true);
+      // Scroll para o formulário após um delay maior para dar tempo de mudar a aba
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 150);
+    } else {
+      // Se já estiver na aba Visão Geral, alterna o formulário
+      setShowForm(!showForm);
+      // Scroll para o formulário após um pequeno delay
+      if (!showForm) {
+        setTimeout(() => {
+          formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      } else {
+        // Se está fechando, volta ao topo
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  };
+
   const handlePaymentMethodsChange = async (methods: string[]) => {
     if (!user) return;
     try {
       await savePaymentMethods(methods, user.id);
       setPaymentMethods(methods);
+      showToast('Métodos de pagamento atualizados!', 'success');
     } catch (error) {
       console.error('Erro ao salvar métodos de pagamento:', error);
-      alert('Erro ao salvar métodos. Tente novamente.');
+      showToast('Erro ao salvar métodos. Tente novamente.', 'error');
     }
   };
 
@@ -139,9 +211,57 @@ function App() {
     try {
       await saveCategories(cats, user.id);
       setCategories(cats);
+      showToast('Categorias atualizadas!', 'success');
     } catch (error) {
       console.error('Erro ao salvar categorias:', error);
-      alert('Erro ao salvar categorias. Tente novamente.');
+      showToast('Erro ao salvar categorias. Tente novamente.', 'error');
+    }
+  };
+
+  const handleCategoryColorsChange = async (colors: Record<string, string>) => {
+    if (!user) return;
+    try {
+      await saveCategoryColors(colors, user.id);
+      setCategoryColors(colors);
+    } catch (error) {
+      console.error('Erro ao salvar cores das categorias:', error);
+      showToast('Erro ao salvar cores das categorias. Tente novamente.', 'error');
+    }
+  };
+
+  const handleAddBudget = async (budget: Budget) => {
+    if (!user) return;
+    try {
+      await addBudgetToFirestore(budget, user.id);
+      setBudgets((prev) => [...prev, budget]);
+      showToast('Orçamento criado com sucesso!', 'success');
+    } catch (error) {
+      console.error('Erro ao criar orçamento:', error);
+      showToast('Erro ao criar orçamento. Tente novamente.', 'error');
+    }
+  };
+
+  const handleUpdateBudget = async (budget: Budget) => {
+    if (!user) return;
+    try {
+      await updateBudgetInFirestore(budget, user.id);
+      setBudgets((prev) => prev.map((b) => (b.id === budget.id ? budget : b)));
+      showToast('Orçamento atualizado com sucesso!', 'success');
+    } catch (error) {
+      console.error('Erro ao atualizar orçamento:', error);
+      showToast('Erro ao atualizar orçamento. Tente novamente.', 'error');
+    }
+  };
+
+  const handleDeleteBudget = async (id: string) => {
+    if (!user) return;
+    try {
+      await deleteBudgetFromFirestore(id, user.id);
+      setBudgets((prev) => prev.filter((b) => b.id !== id));
+      showToast('Orçamento excluído com sucesso!', 'success');
+    } catch (error) {
+      console.error('Erro ao excluir orçamento:', error);
+      showToast('Erro ao excluir orçamento. Tente novamente.', 'error');
     }
   };
 
@@ -188,7 +308,7 @@ function App() {
   }
 
   return (
-    <div id="top" className="min-h-screen pb-8">
+    <div id="top" className="min-h-screen pb-24 sm:pb-8">
       <Header />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
@@ -204,8 +324,8 @@ function App() {
               </div>
             </div>
 
-            {/* Navegação por Abas */}
-            <div className="flex gap-2 bg-white/10 backdrop-blur-sm p-1 rounded-xl w-full sm:w-auto">
+            {/* Navegação por Abas (desktop) */}
+            <div className="hidden sm:flex gap-2 bg-white/10 backdrop-blur-sm p-1 rounded-xl w-full sm:w-auto">
               <button
                 onClick={() => setActiveTab('overview')}
                 className={`flex-1 sm:flex-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 rounded-lg font-semibold transition-all ${
@@ -236,7 +356,11 @@ function App() {
         {activeTab === 'overview' ? (
           <>
             <div id="dashboard">
-              <Dashboard transactions={transactions} />
+              <Dashboard
+                transactions={transactions}
+                budgets={budgets}
+                onManageBudgets={() => setShowBudgetManager(true)}
+              />
             </div>
 
             {showForm && (
@@ -268,51 +392,53 @@ function App() {
       </div>
 
       {showPaymentMethodsManager && (
-        <PaymentMethodsManager
-          methods={paymentMethods}
-          onMethodsChange={handlePaymentMethodsChange}
+        <ListManager
+          title="Gerenciar Métodos"
+          icon={CreditCard}
+          itemLabelSingular="Método de Pagamento"
+          addPlaceholder="Ex: Cartão Santander, Pix..."
+          items={paymentMethods}
+          onItemsChange={handlePaymentMethodsChange}
           onClose={() => setShowPaymentMethodsManager(false)}
+          gradientTheme="purple"
         />
       )}
 
       {showCategoriesManager && (
-        <CategoriesManager
-          categories={categories}
-          onCategoriesChange={handleCategoriesChange}
+        <ListManager
+          title="Gerenciar Categorias"
+          icon={Tag}
+          itemLabelSingular="Categoria"
+          addPlaceholder="Ex: Mercado, IPVA, Lazer..."
+          items={categories}
+          onItemsChange={handleCategoriesChange}
           onClose={() => setShowCategoriesManager(false)}
+          gradientTheme="green"
+          colors={categoryColors}
+          onColorsChange={handleCategoryColorsChange}
         />
       )}
 
-      {/* Botão FAB: Nova Transação */}
+      {showBudgetManager && (
+        <BudgetManager
+          budgets={budgets}
+          categories={categories}
+          onAdd={handleAddBudget}
+          onUpdate={handleUpdateBudget}
+          onDelete={handleDeleteBudget}
+          onClose={() => setShowBudgetManager(false)}
+        />
+      )}
+
+      {/* Botão FAB: Nova Transação (desktop) */}
       <button
-        onClick={() => {
-          // Se estiver na aba Análises, muda para Visão Geral
-          if (activeTab === 'analytics') {
-            setActiveTab('overview');
-            setShowForm(true);
-            // Scroll para o formulário após um delay maior para dar tempo de mudar a aba
-            setTimeout(() => {
-              formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 150);
-          } else {
-            // Se já estiver na aba Visão Geral, alterna o formulário
-            setShowForm(!showForm);
-            // Scroll para o formulário após um pequeno delay
-            if (!showForm) {
-              setTimeout(() => {
-                formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }, 100);
-            } else {
-              // Se está fechando, volta ao topo
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-          }
-        }}
-        className={`fixed bottom-6 right-6 p-3 ${
+        onClick={handleNewTransactionClick}
+        className={`hidden sm:block fixed bottom-6 right-6 p-3 ${
           showForm && activeTab === 'overview'
             ? 'bg-red-600 hover:bg-red-700'
             : 'bg-gray-900 hover:bg-green-600'
-        } text-white rounded-full shadow-xl transition-all duration-200 ease-in-out transform hover:scale-[0.93] active:scale-95 z-[9999]`}
+        } text-white rounded-full shadow-xl transition-all duration-200 ease-in-out transform hover:scale-[0.93] active:scale-95 z-30`}
+        aria-label={showForm && activeTab === 'overview' ? 'Fechar formulário' : 'Nova transação'}
         title={showForm && activeTab === 'overview' ? 'Fechar formulário' : 'Nova transação'}
       >
         {showForm && activeTab === 'overview' ? (
@@ -326,12 +452,21 @@ function App() {
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-20 right-6 p-3 bg-white/90 hover:bg-white text-purple-600 rounded-full shadow-lg transition-all duration-200 ease-in-out transform hover:scale-[0.93] z-[1000] animate-fadeIn border border-black"
+          className="fixed bottom-24 sm:bottom-20 right-6 p-3 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 text-purple-600 dark:text-purple-400 rounded-full shadow-lg transition-all duration-200 ease-in-out transform hover:scale-[0.93] z-30 animate-fadeIn border border-black dark:border-gray-600"
+          aria-label="Voltar ao topo"
           title="Voltar ao topo"
         >
           <ArrowUp className="w-6 h-6" />
         </button>
       )}
+
+      {/* Navegação inferior (mobile) */}
+      <BottomNav
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        onNewTransaction={handleNewTransactionClick}
+        isFormOpen={showForm && activeTab === 'overview'}
+      />
     </div>
   );
 }

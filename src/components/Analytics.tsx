@@ -182,14 +182,14 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Header com filtros */}
-      <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
         <div className="flex flex-col gap-3 sm:gap-4">
           <div>
-            <h2 className="text-lg sm:text-2xl font-bold text-gray-800 flex items-center gap-2">
-              <Target className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
+            <h2 className="text-lg sm:text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+              <Target className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
               Análise Financeira
             </h2>
-            <p className="text-xs sm:text-sm text-gray-500 mt-1">
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
               {periodLabels[periodFilter]} • {stats.totalTransactions} transações
             </p>
           </div>
@@ -203,7 +203,7 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
                 className={`px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                   periodFilter === period
                     ? 'bg-purple-600 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200 active:bg-gray-300'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 active:bg-gray-300 dark:active:bg-gray-500'
                 }`}
               >
                 {periodLabels[period].replace('Últimos ', '').replace('Último ', '')}
@@ -281,9 +281,9 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
       {/* Gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Gráfico: Gastos por Categoria */}
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
-          <h3 className="text-base sm:text-lg font-bold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
-            <Wallet className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
+        <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
+          <h3 className="text-base sm:text-lg font-bold text-gray-800 dark:text-gray-100 mb-3 sm:mb-4 flex items-center gap-2">
+            <Wallet className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-400" />
             Gastos por Categoria
           </h3>
           {categoryData.length > 0 ? (
@@ -315,16 +315,16 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[250px] flex items-center justify-center text-gray-400 text-sm">
+            <div className="h-[250px] flex items-center justify-center text-gray-400 dark:text-gray-500 text-sm">
               <p>Sem dados de categorias</p>
             </div>
           )}
         </div>
 
         {/* Gráfico: Gastos por Método */}
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
-          <h3 className="text-base sm:text-lg font-bold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
-            <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
+        <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
+          <h3 className="text-base sm:text-lg font-bold text-gray-800 dark:text-gray-100 mb-3 sm:mb-4 flex items-center gap-2">
+            <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-400" />
             Gastos por Método de Pagamento
           </h3>
           {paymentMethodData.length > 0 ? (
@@ -356,16 +356,16 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[250px] flex items-center justify-center text-gray-400 text-sm">
+            <div className="h-[250px] flex items-center justify-center text-gray-400 dark:text-gray-500 text-sm">
               <p>Sem dados de métodos</p>
             </div>
           )}
         </div>
 
         {/* Gráfico Combinado: Entradas vs Saídas + Evolução do Saldo */}
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 lg:col-span-2">
-          <h3 className="text-base sm:text-lg font-bold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
+        <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 lg:col-span-2">
+          <h3 className="text-base sm:text-lg font-bold text-gray-800 dark:text-gray-100 mb-3 sm:mb-4 flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-400" />
             Evolução: Entradas, Saídas e Saldo
           </h3>
           {timelineData.length > 0 ? (
@@ -413,7 +413,7 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
               </ComposedChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[300px] flex items-center justify-center text-gray-400 text-sm">
+            <div className="h-[300px] flex items-center justify-center text-gray-400 dark:text-gray-500 text-sm">
               <p>Sem dados de evolução</p>
             </div>
           )}
