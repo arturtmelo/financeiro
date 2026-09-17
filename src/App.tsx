@@ -438,11 +438,11 @@ function App() {
       {/* Botão FAB: Nova Transação (desktop) */}
       <button
         onClick={handleNewTransactionClick}
-        className="hidden sm:flex items-center justify-center fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-full shadow-2xl ring-4 ring-white/40 dark:ring-black/30 transition-all duration-200 ease-in-out transform hover:scale-110 active:scale-95 z-30 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-green-300"
+        className="hidden sm:flex items-center justify-center fixed bottom-6 right-6 p-3 bg-gradient-to-br from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-full shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 z-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-300"
         aria-label="Nova transação"
         title="Nova transação"
       >
-        <DollarSign className="w-8 h-8" />
+        <DollarSign className="w-6 h-6" />
       </button>
 
       {/* Botão Voltar ao Topo */}
