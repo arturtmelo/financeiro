@@ -24,7 +24,8 @@ import {
   ArrowDownCircle,
   Wallet,
 } from 'lucide-react';
-import { formatCurrency } from '../utils/calculations';
+import { filterTransactionsByPeriod, formatCurrency, PeriodFilter } from '../utils/calculations';
+import PeriodTabs from './PeriodTabs';
 
 interface AnalyticsProps {
   transactions: Transaction[];
@@ -41,39 +42,16 @@ const COLORS = [
   '#f97316', // orange
 ];
 
-type PeriodFilter = 'week' | 'month' | 'quarter' | 'year' | 'all';
+type AnalyticsPeriod = Extract<PeriodFilter, 'week' | 'month' | 'quarter' | 'year' | 'all'>;
 
 const Analytics = ({ transactions }: AnalyticsProps) => {
-  const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('month');
+  const [periodFilter, setPeriodFilter] = useState<AnalyticsPeriod>('month');
 
-  // Filtrar transações por período
-  const filteredTransactions = useMemo(() => {
-    const now = new Date();
-    const startDate = new Date();
-
-    switch (periodFilter) {
-      case 'week':
-        startDate.setDate(now.getDate() - 7);
-        break;
-      case 'month':
-        startDate.setMonth(now.getMonth() - 1);
-        break;
-      case 'quarter':
-        startDate.setMonth(now.getMonth() - 3);
-        break;
-      case 'year':
-        startDate.setFullYear(now.getFullYear() - 1);
-        break;
-      case 'all':
-        return transactions;
-    }
-
-    return transactions.filter((t) => {
-      const [year, month, day] = t.date.split('-').map(Number);
-      const transactionDate = new Date(year, month - 1, day);
-      return transactionDate >= startDate;
-    });
-  }, [transactions, periodFilter]);
+  // Filtrar transações por período (mesma lógica compartilhada com o Dashboard)
+  const filteredTransactions = useMemo(
+    () => filterTransactionsByPeriod(transactions, periodFilter),
+    [transactions, periodFilter]
+  );
 
   // Calcular estatísticas gerais
   const stats = useMemo(() => {
@@ -171,13 +149,18 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
     return date.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
   };
 
-  const periodLabels: Record<PeriodFilter, string> = {
+  const periodLabels: Record<AnalyticsPeriod, string> = {
     week: 'Últimos 7 Dias',
     month: 'Último Mês',
     quarter: 'Últimos 3 Meses',
     year: 'Último Ano',
     all: 'Tudo',
   };
+
+  const periodOptions = (Object.keys(periodLabels) as AnalyticsPeriod[]).map((period) => ({
+    value: period,
+    label: periodLabels[period].replace('Últimos ', '').replace('Último ', ''),
+  }));
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -194,22 +177,7 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
             </p>
           </div>
 
-          {/* Filtros de período */}
-          <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2">
-            {(Object.keys(periodLabels) as PeriodFilter[]).map((period) => (
-              <button
-                key={period}
-                onClick={() => setPeriodFilter(period)}
-                className={`px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
-                  periodFilter === period
-                    ? 'bg-purple-600 text-white shadow-md'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 active:bg-gray-300 dark:active:bg-gray-500'
-                }`}
-              >
-                {periodLabels[period].replace('Últimos ', '').replace('Último ', '')}
-              </button>
-            ))}
-          </div>
+          <PeriodTabs value={periodFilter} onChange={setPeriodFilter} options={periodOptions} />
         </div>
       </div>
 

@@ -1,11 +1,15 @@
+import { useState } from 'react';
 import { Transaction, Budget } from '../types';
 import {
-  calculateMonthlyStats,
+  calculateStats,
+  filterTransactionsByPeriod,
   formatCurrency,
   getPaymentMethodStats,
+  PeriodFilter,
 } from '../utils/calculations';
-import { TrendingUp, TrendingDown, Wallet, CreditCard } from 'lucide-react';
+import { TrendingUp, TrendingDown, Wallet, CreditCard, Target } from 'lucide-react';
 import BudgetProgress from './BudgetProgress';
+import PeriodTabs from './PeriodTabs';
 
 interface DashboardProps {
   transactions: Transaction[];
@@ -13,13 +17,51 @@ interface DashboardProps {
   onManageBudgets: () => void;
 }
 
+type DashboardPeriod = Extract<PeriodFilter, 'month' | '6months' | 'year' | 'all'>;
+
+const PERIOD_OPTIONS: { value: DashboardPeriod; label: string }[] = [
+  { value: 'month', label: 'Último Mês' },
+  { value: '6months', label: 'Últimos 6 Meses' },
+  { value: 'year', label: 'Último Ano' },
+  { value: 'all', label: 'Tudo' },
+];
+
+const PERIOD_LABELS: Record<DashboardPeriod, string> = {
+  month: 'Último Mês',
+  '6months': 'Últimos 6 Meses',
+  year: 'Último Ano',
+  all: 'Tudo',
+};
+
 const Dashboard = ({ transactions, budgets, onManageBudgets }: DashboardProps) => {
-  const stats = calculateMonthlyStats(transactions);
-  const paymentStats = getPaymentMethodStats(transactions);
+  const [period, setPeriod] = useState<DashboardPeriod>('month');
+
+  // Cards de resumo e total por método usam o mesmo recorte de período.
+  // Orçamentos (BudgetProgress) continuam sempre por mês-calendário, à parte.
+  const filteredTransactions = filterTransactionsByPeriod(transactions, period);
+  const stats = calculateStats(filteredTransactions);
+  const paymentStats = getPaymentMethodStats(filteredTransactions);
 
   return (
     <div className="mb-8 space-y-6">
+      {/* Header com filtro de período */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
+        <div className="flex flex-col gap-3 sm:gap-4">
+          <div>
+            <h2 className="text-lg sm:text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+              <Target className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
+              Visão Geral
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
+              {PERIOD_LABELS[period]} • {stats.transactionCount} transações
+            </p>
+          </div>
+          <PeriodTabs value={period} onChange={setPeriod} options={PERIOD_OPTIONS} />
+        </div>
+      </div>
+
       <BudgetProgress transactions={transactions} budgets={budgets} onManageBudgets={onManageBudgets} />
+
       {/* Cards de Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
@@ -51,9 +93,10 @@ const Dashboard = ({ transactions, budgets, onManageBudgets }: DashboardProps) =
       {/* Estatísticas por Método de Pagamento */}
       {paymentStats.length > 0 && (
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-4 sm:p-6">
-          <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">
+          <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100 mb-1">
             Total por Método de Pagamento
           </h3>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">{PERIOD_LABELS[period]}</p>
           <div className="space-y-3">
             {paymentStats.slice(0, 5).map((stat, index) => {
               const isPositive = stat.total >= 0;

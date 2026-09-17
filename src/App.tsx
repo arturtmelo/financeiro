@@ -29,7 +29,7 @@ import ListManager from './components/ListManager';
 import BudgetManager from './components/BudgetManager';
 import BottomNav from './components/BottomNav';
 import Login from './components/Login';
-import { Wallet, ArrowUp, Plus, X, BarChart3, List, CreditCard, Tag } from 'lucide-react';
+import { Wallet, ArrowUp, DollarSign, BarChart3, List, CreditCard, Tag } from 'lucide-react';
 
 function App() {
   const { user, isAuthenticated, isLoading, isDemo } = useAuth();
@@ -40,7 +40,6 @@ function App() {
   const [categoryColors, setCategoryColors] = useState<Record<string, string>>({});
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [activeTab, setActiveTab] = useState<'overview' | 'analytics'>('overview');
-  const [showForm, setShowForm] = useState(false);
   const [showPaymentMethodsManager, setShowPaymentMethodsManager] = useState(false);
   const [showCategoriesManager, setShowCategoriesManager] = useState(false);
   const [showBudgetManager, setShowBudgetManager] = useState(false);
@@ -112,7 +111,6 @@ function App() {
       await addTransactionToFirestore(transaction, user.id);
       const updatedTransactions = [...transactions, transaction];
       setTransactions(updatedTransactions);
-      setShowForm(false);
       showToast('Transação adicionada com sucesso!', 'success');
       checkBudgetAlert(transaction, updatedTransactions);
     } catch (error) {
@@ -130,7 +128,6 @@ function App() {
       );
       setTransactions(updatedTransactions);
       setEditingTransaction(null);
-      setShowForm(false);
       showToast('Transação atualizada com sucesso!', 'success');
       checkBudgetAlert(transaction, updatedTransactions);
     } catch (error) {
@@ -153,7 +150,6 @@ function App() {
 
   const handleEditTransaction = (transaction: Transaction) => {
     setEditingTransaction(transaction);
-    setShowForm(true);
     // Scroll para o formulário após um pequeno delay
     setTimeout(() => {
       formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -161,7 +157,6 @@ function App() {
   };
 
   const handleCancelForm = () => {
-    setShowForm(false);
     setEditingTransaction(null);
   };
 
@@ -182,26 +177,14 @@ function App() {
   };
 
   const handleNewTransactionClick = () => {
-    // Se estiver na aba Análises, muda para Visão Geral
+    // Se estiver na aba Análises, muda para Visão Geral antes de rolar
     if (activeTab === 'analytics') {
       setActiveTab('overview');
-      setShowForm(true);
-      // Scroll para o formulário após um delay maior para dar tempo de mudar a aba
       setTimeout(() => {
         formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 150);
     } else {
-      // Se já estiver na aba Visão Geral, alterna o formulário
-      setShowForm(!showForm);
-      // Scroll para o formulário após um pequeno delay
-      if (!showForm) {
-        setTimeout(() => {
-          formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-      } else {
-        // Se está fechando, volta ao topo
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
@@ -344,7 +327,7 @@ function App() {
                 <Wallet className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">Financeiro</h1>
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">Finanças</h1>
               </div>
             </div>
 
@@ -387,19 +370,17 @@ function App() {
               />
             </div>
 
-            {showForm && (
-              <div ref={formRef} className="mb-8 animate-slideDown scroll-mt-14">
-                <TransactionForm
-                  onSubmit={editingTransaction ? handleUpdateTransaction : handleAddTransaction}
-                  onCancel={handleCancelForm}
-                  editingTransaction={editingTransaction}
-                  paymentMethods={paymentMethods}
-                  onManagePaymentMethods={() => setShowPaymentMethodsManager(true)}
-                  categories={categories}
-                  onManageCategories={() => setShowCategoriesManager(true)}
-                />
-              </div>
-            )}
+            <div ref={formRef} className="mb-8 scroll-mt-20">
+              <TransactionForm
+                onSubmit={editingTransaction ? handleUpdateTransaction : handleAddTransaction}
+                onCancel={handleCancelForm}
+                editingTransaction={editingTransaction}
+                paymentMethods={paymentMethods}
+                onManagePaymentMethods={() => setShowPaymentMethodsManager(true)}
+                categories={categories}
+                onManageCategories={() => setShowCategoriesManager(true)}
+              />
+            </div>
 
             <div id="transactions">
               <TransactionList
@@ -457,19 +438,11 @@ function App() {
       {/* Botão FAB: Nova Transação (desktop) */}
       <button
         onClick={handleNewTransactionClick}
-        className={`hidden sm:block fixed bottom-6 right-6 p-3 ${
-          showForm && activeTab === 'overview'
-            ? 'bg-red-600 hover:bg-red-700'
-            : 'bg-gray-900 hover:bg-green-600'
-        } text-white rounded-full shadow-xl transition-all duration-200 ease-in-out transform hover:scale-[0.93] active:scale-95 z-30`}
-        aria-label={showForm && activeTab === 'overview' ? 'Fechar formulário' : 'Nova transação'}
-        title={showForm && activeTab === 'overview' ? 'Fechar formulário' : 'Nova transação'}
+        className="hidden sm:flex items-center justify-center fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-full shadow-2xl ring-4 ring-white/40 dark:ring-black/30 transition-all duration-200 ease-in-out transform hover:scale-110 active:scale-95 z-30"
+        aria-label="Nova transação"
+        title="Nova transação"
       >
-        {showForm && activeTab === 'overview' ? (
-          <X className="w-6 h-6" />
-        ) : (
-          <Plus className="w-6 h-6" />
-        )}
+        <DollarSign className="w-8 h-8" />
       </button>
 
       {/* Botão Voltar ao Topo */}
@@ -489,7 +462,6 @@ function App() {
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onNewTransaction={handleNewTransactionClick}
-        isFormOpen={showForm && activeTab === 'overview'}
       />
     </div>
   );

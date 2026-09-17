@@ -43,7 +43,7 @@ const Header = () => {
                 isScrolled ? 'text-gray-900 dark:text-gray-100' : 'text-white'
               }`}
             >
-              Lê
+              Finanças
             </span>
           </button>
 

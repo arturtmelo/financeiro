@@ -1,13 +1,12 @@
-import { List, BarChart3, Plus, X } from 'lucide-react';
+import { List, BarChart3, DollarSign } from 'lucide-react';
 
 interface BottomNavProps {
   activeTab: 'overview' | 'analytics';
   onTabChange: (tab: 'overview' | 'analytics') => void;
   onNewTransaction: () => void;
-  isFormOpen: boolean;
 }
 
-const BottomNav = ({ activeTab, onTabChange, onNewTransaction, isFormOpen }: BottomNavProps) => {
+const BottomNav = ({ activeTab, onTabChange, onNewTransaction }: BottomNavProps) => {
   return (
     <nav
       className="sm:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-gray-200 dark:border-gray-700 shadow-[0_-4px_12px_rgba(0,0,0,0.06)]"
@@ -29,14 +28,10 @@ const BottomNav = ({ activeTab, onTabChange, onNewTransaction, isFormOpen }: Bot
         <div className="flex items-center justify-center">
           <button
             onClick={onNewTransaction}
-            className={`flex items-center justify-center w-14 h-14 rounded-full shadow-lg -translate-y-4 transition-all transform active:scale-95 ${
-              isFormOpen
-                ? 'bg-red-600 hover:bg-red-700'
-                : 'bg-gradient-to-br from-purple-500 to-indigo-600'
-            } text-white`}
-            aria-label={isFormOpen ? 'Fechar formulário' : 'Nova transação'}
+            className="flex items-center justify-center w-16 h-16 rounded-full shadow-2xl ring-4 ring-white/60 dark:ring-gray-900/60 -translate-y-5 transition-all transform active:scale-95 bg-gradient-to-br from-green-500 to-emerald-600 text-white"
+            aria-label="Nova transação"
           >
-            {isFormOpen ? <X className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
+            <DollarSign className="w-7 h-7" />
           </button>
         </div>
 

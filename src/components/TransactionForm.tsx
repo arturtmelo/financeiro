@@ -103,6 +103,17 @@ const TransactionForm = ({
       setPaymentMethod(editingTransaction.paymentMethod);
       setDate(editingTransaction.date);
       setCategory(editingTransaction.category || '');
+      setError('');
+    } else {
+      // Volta para os valores em branco ao cancelar uma edição (o formulário
+      // fica sempre montado na página, então isso não acontece sozinho)
+      setDescription('');
+      setAmount('');
+      setType('saida');
+      setPaymentMethod(paymentMethods[0] || '');
+      setDate(getLocalDateString());
+      setCategory('');
+      setError('');
     }
   }, [editingTransaction]);
 
@@ -149,7 +160,7 @@ const TransactionForm = ({
       setDescription('');
       setAmount('');
       setType('saida');
-      setPaymentMethod('Pix');
+      setPaymentMethod(paymentMethods[0] || '');
       setDate(getLocalDateString());
       setCategory('');
     }
@@ -335,7 +346,7 @@ const TransactionForm = ({
             className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-xl transition-colors order-2 sm:order-1"
           >
             <X className="w-5 h-5" />
-            Cancelar
+            {editingTransaction ? 'Cancelar Edição' : 'Limpar'}
           </button>
           <button
             type="submit"

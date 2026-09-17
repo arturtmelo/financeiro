@@ -5,7 +5,7 @@ export const DEMO_USER_ID = 'demo-user';
 export const DEMO_USER: User = {
   id: DEMO_USER_ID,
   name: 'Visitante Demo',
-  email: 'demo@le-financeiro.app',
+  email: 'demo@financas.app',
   password: '',
   createdAt: '2024-01-01T00:00:00.000Z',
 };

@@ -9,8 +9,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.png'],
       manifest: {
-        name: 'Lê Financeiro',
-        short_name: 'Lê',
+        name: 'Finanças',
+        short_name: 'Finanças',
         description: 'Controle financeiro pessoal simples e rápido',
         theme_color: '#764ba2',
         background_color: '#667eea',

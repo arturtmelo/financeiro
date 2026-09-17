@@ -147,7 +147,7 @@ const Login = () => {
           <div className="inline-flex items-center justify-center w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl mb-6">
             <TrendingUp className="w-7 h-7" />
           </div>
-          <h1 className="text-4xl font-bold mb-3">Lê Financeiro</h1>
+          <h1 className="text-4xl font-bold mb-3">Finanças</h1>
           <p className="text-white/80 mb-8">
             Controle suas finanças pessoais de forma simples, visual e no seu ritmo.
           </p>
@@ -170,7 +170,7 @@ const Login = () => {
             <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl mb-3">
               <TrendingUp className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Lê Financeiro</h1>
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Finanças</h1>
           </div>
 
           {mode === 'forgot' && (
