@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Plus, Trash2, Edit2, X, Save, Palette, type LucideIcon } from 'lucide-react';
 import ConfirmDialog from './ConfirmDialog';
+import EmptyState from './EmptyState';
 import { CATEGORY_COLOR_PALETTE, getCategoryColor, getColorClasses } from '../utils/colors';
 
 type GradientTheme = 'purple' | 'green';
@@ -168,7 +169,7 @@ const ListManager = ({
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-lg transition-colors flex-shrink-0"
+              className="p-2 hover:bg-white/20 rounded-lg transition-colors flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               aria-label="Fechar"
             >
               <X className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -190,7 +191,7 @@ const ListManager = ({
                 onChange={(e) => setNewItem(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
                 placeholder={addPlaceholder}
-                className={`flex-1 px-3 sm:px-4 py-2 border-2 border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 rounded-xl ${theme.focusBorder} focus:outline-none transition-colors text-sm sm:text-base`}
+                className={`flex-1 px-3 sm:px-4 py-2 border-2 border-gray-200 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 rounded-xl ${theme.focusBorder} focus:outline-none transition-colors text-sm sm:text-base`}
               />
               <button
                 onClick={handleAdd}
@@ -215,7 +216,7 @@ const ListManager = ({
 
                 return (
                   <div key={item}>
-                    <div className="flex items-center justify-between p-2 sm:p-3 bg-gray-50 dark:bg-gray-900 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group">
+                    <div className="flex items-center justify-between p-2 sm:p-3 bg-gray-50 dark:bg-gray-900 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                       {editingIndex === index ? (
                         <>
                           <input
@@ -223,20 +224,22 @@ const ListManager = ({
                             value={editingValue}
                             onChange={(e) => setEditingValue(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSaveEdit()}
-                            className={`flex-1 px-3 py-1 border-2 ${theme.editBorder} dark:bg-gray-800 dark:text-gray-100 rounded-lg focus:outline-none text-sm sm:text-base`}
+                            className={`flex-1 px-3 py-1 border-2 ${theme.editBorder} dark:bg-gray-900 dark:text-gray-100 rounded-lg focus:outline-none text-sm sm:text-base`}
                             autoFocus
                           />
                           <div className="flex items-center gap-1 sm:gap-2 ml-2">
                             <button
                               onClick={handleSaveEdit}
-                              className="p-1.5 sm:p-2 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-950 rounded-lg transition-colors"
+                              className="p-2 text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950 hover:bg-green-100 dark:hover:bg-green-900 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
+                              aria-label="Salvar"
                               title="Salvar"
                             >
                               <Save className="w-4 h-4" />
                             </button>
                             <button
                               onClick={handleCancelEdit}
-                              className="p-1.5 sm:p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
+                              className="p-2 text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
+                              aria-label="Cancelar edição"
                               title="Cancelar"
                             >
                               <X className="w-4 h-4" />
@@ -251,14 +254,15 @@ const ListManager = ({
                                 onClick={() =>
                                   setColorPickerFor(colorPickerFor === item ? null : item)
                                 }
-                                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg ${colorClasses.dot} flex items-center justify-center text-white flex-shrink-0 transition-transform hover:scale-105`}
+                                className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg ${colorClasses.dot} flex items-center justify-center text-white flex-shrink-0 transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900`}
+                                aria-label={`Escolher cor de "${item}"`}
                                 title="Escolher cor"
                               >
                                 <Palette className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                               </button>
                             ) : (
                               <div
-                                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg ${theme.badge} flex items-center justify-center text-white font-bold text-xs sm:text-sm flex-shrink-0`}
+                                className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg ${theme.badge} flex items-center justify-center text-white font-bold text-xs sm:text-sm flex-shrink-0`}
                               >
                                 {index + 1}
                               </div>
@@ -273,17 +277,19 @@ const ListManager = ({
                               {item}
                             </span>
                           </div>
-                          <div className="flex items-center gap-1 sm:gap-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                          <div className="flex items-center gap-1 sm:gap-2">
                             <button
                               onClick={() => handleStartEdit(index)}
-                              className="p-1.5 sm:p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950 rounded-lg transition-colors"
+                              className="p-2 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
+                              aria-label={`Editar "${item}"`}
                               title="Editar"
                             >
                               <Edit2 className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => handleDeleteClick(item)}
-                              className="p-1.5 sm:p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 rounded-lg transition-colors"
+                              className="p-2 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950 hover:bg-red-100 dark:hover:bg-red-900 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
+                              aria-label={`Excluir "${item}"`}
                               title="Excluir"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -315,11 +321,12 @@ const ListManager = ({
               })}
 
               {items.length === 0 && (
-                <div className="text-center py-8 text-gray-400 dark:text-gray-500">
-                  <Icon className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm sm:text-base">Nenhum item cadastrado</p>
-                  <p className="text-xs sm:text-sm mt-1">Adicione o primeiro item acima</p>
-                </div>
+                <EmptyState
+                  icon={Icon}
+                  title="Nenhum item cadastrado"
+                  subtitle="Adicione o primeiro item acima"
+                  compact
+                />
               )}
             </div>
           </div>

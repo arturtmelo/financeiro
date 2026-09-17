@@ -11,12 +11,12 @@ interface PeriodTabsProps<T extends string> {
 
 const PeriodTabs = <T extends string>({ value, onChange, options }: PeriodTabsProps<T>) => {
   return (
-    <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
+    <div className="flex flex-wrap gap-2">
       {options.map((option) => (
         <button
           key={option.value}
           onClick={() => onChange(option.value)}
-          className={`px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+          className={`px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 ${
             value === option.value
               ? 'bg-purple-600 text-white shadow-md'
               : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 active:bg-gray-300 dark:active:bg-gray-500'

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Transaction, Budget } from '../types';
 import { calculateBudgetProgress, formatCurrency } from '../utils/calculations';
+import { SUBSECTION_HEADING_CLASS } from '../utils/uiClasses';
 import { PiggyBank, Settings } from 'lucide-react';
 
 interface BudgetProgressProps {
@@ -19,14 +20,14 @@ const BudgetProgress = ({ transactions, budgets, onManageBudgets }: BudgetProgre
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-4 sm:p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-          <PiggyBank className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+      <div className="flex items-center justify-between mb-4 gap-2">
+        <h3 className={SUBSECTION_HEADING_CLASS}>
+          <PiggyBank className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" />
           Orçamentos do Mês
         </h3>
         <button
           onClick={onManageBudgets}
-          className="text-sm text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-medium flex items-center gap-1"
+          className="text-sm text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-medium flex items-center gap-1 p-2 -m-2 flex-shrink-0"
         >
           <Settings className="w-4 h-4" />
           Gerenciar
@@ -49,11 +50,11 @@ const BudgetProgress = ({ transactions, budgets, onManageBudgets }: BudgetProgre
 
           return (
             <div key={budget.id}>
-              <div className="flex items-center justify-between mb-1">
-                <span className="font-medium text-gray-700 dark:text-gray-300 text-sm sm:text-base">
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <span className="font-medium text-gray-700 dark:text-gray-300 text-sm sm:text-base truncate min-w-0">
                   {budget.category}
                 </span>
-                <span className={`text-sm font-semibold ${textColor}`}>
+                <span className={`text-xs sm:text-sm font-semibold flex-shrink-0 ${textColor}`}>
                   {formatCurrency(spent)} / {formatCurrency(budget.limit)}
                 </span>
               </div>

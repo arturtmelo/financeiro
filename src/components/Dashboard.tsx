@@ -10,6 +10,7 @@ import {
 import { TrendingUp, TrendingDown, Wallet, CreditCard, Target } from 'lucide-react';
 import BudgetProgress from './BudgetProgress';
 import PeriodTabs from './PeriodTabs';
+import { SECTION_HEADING_CLASS, SUBSECTION_HEADING_CLASS } from '../utils/uiClasses';
 
 interface DashboardProps {
   transactions: Transaction[];
@@ -48,7 +49,7 @@ const Dashboard = ({ transactions, budgets, onManageBudgets }: DashboardProps) =
       <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
         <div className="flex flex-col gap-3 sm:gap-4">
           <div>
-            <h2 className="text-lg sm:text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+            <h2 className={SECTION_HEADING_CLASS}>
               <Target className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
               Visão Geral
             </h2>
@@ -63,7 +64,7 @@ const Dashboard = ({ transactions, budgets, onManageBudgets }: DashboardProps) =
       <BudgetProgress transactions={transactions} budgets={budgets} onManageBudgets={onManageBudgets} />
 
       {/* Cards de Resumo */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         <StatCard
           title="Entradas"
           value={formatCurrency(stats.totalIncome)}
@@ -93,9 +94,7 @@ const Dashboard = ({ transactions, budgets, onManageBudgets }: DashboardProps) =
       {/* Estatísticas por Método de Pagamento */}
       {paymentStats.length > 0 && (
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-4 sm:p-6">
-          <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100 mb-1">
-            Total por Método de Pagamento
-          </h3>
+          <h3 className={`${SUBSECTION_HEADING_CLASS} mb-1`}>Total por Método de Pagamento</h3>
           <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">{PERIOD_LABELS[period]}</p>
           <div className="space-y-3">
             {paymentStats.slice(0, 5).map((stat, index) => {
@@ -107,11 +106,11 @@ const Dashboard = ({ transactions, budgets, onManageBudgets }: DashboardProps) =
                   key={stat.method}
                   className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
                     <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-xs sm:text-sm flex-shrink-0">
                       {index + 1}
                     </div>
-                    <span className="font-medium text-gray-700 dark:text-gray-300 text-sm sm:text-base">
+                    <span className="font-medium text-gray-700 dark:text-gray-300 text-sm sm:text-base truncate">
                       {stat.method}
                     </span>
                   </div>
@@ -164,13 +163,19 @@ const StatCard = ({ title, value, icon, color }: StatCardProps) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 transform transition-all hover:scale-105">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-2">{title}</p>
-          <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{value}</p>
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-4 sm:p-6 transform transition-all hover:scale-105">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1 sm:mb-2 truncate">
+            {title}
+          </p>
+          <p className="text-lg sm:text-2xl font-bold text-gray-800 dark:text-gray-100 break-all">
+            {value}
+          </p>
         </div>
-        <div className={`bg-gradient-to-br ${colorClasses[color]} p-3 rounded-xl text-white`}>
+        <div
+          className={`bg-gradient-to-br ${colorClasses[color]} p-2 sm:p-3 rounded-xl text-white flex-shrink-0`}
+        >
           {icon}
         </div>
       </div>

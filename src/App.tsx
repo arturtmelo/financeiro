@@ -311,7 +311,7 @@ function App() {
           <span>— dados fictícios, nada é enviado ao servidor.</span>
           <button
             onClick={handleResetDemoData}
-            className="underline font-semibold hover:text-amber-800"
+            className="underline font-semibold hover:text-amber-800 p-2 -m-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-900 rounded-lg"
           >
             Reiniciar dados demo
           </button>
@@ -335,7 +335,7 @@ function App() {
             <div className="hidden sm:flex gap-2 bg-white/10 backdrop-blur-sm p-1 rounded-xl w-full sm:w-auto">
               <button
                 onClick={() => setActiveTab('overview')}
-                className={`flex-1 sm:flex-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 rounded-lg font-semibold transition-all ${
+                className={`flex-1 sm:flex-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 rounded-lg font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${
                   activeTab === 'overview'
                     ? 'bg-white text-purple-600 shadow-md'
                     : 'text-white hover:bg-white/10'
@@ -346,7 +346,7 @@ function App() {
               </button>
               <button
                 onClick={() => setActiveTab('analytics')}
-                className={`flex-1 sm:flex-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 rounded-lg font-semibold transition-all ${
+                className={`flex-1 sm:flex-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 rounded-lg font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${
                   activeTab === 'analytics'
                     ? 'bg-white text-purple-600 shadow-md'
                     : 'text-white hover:bg-white/10'
@@ -438,7 +438,7 @@ function App() {
       {/* Botão FAB: Nova Transação (desktop) */}
       <button
         onClick={handleNewTransactionClick}
-        className="hidden sm:flex items-center justify-center fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-full shadow-2xl ring-4 ring-white/40 dark:ring-black/30 transition-all duration-200 ease-in-out transform hover:scale-110 active:scale-95 z-30"
+        className="hidden sm:flex items-center justify-center fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-full shadow-2xl ring-4 ring-white/40 dark:ring-black/30 transition-all duration-200 ease-in-out transform hover:scale-110 active:scale-95 z-30 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-green-300"
         aria-label="Nova transação"
         title="Nova transação"
       >
@@ -449,7 +449,7 @@ function App() {
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-24 sm:bottom-20 right-6 p-3 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 text-purple-600 dark:text-purple-400 rounded-full shadow-lg transition-all duration-200 ease-in-out transform hover:scale-[0.93] z-30 animate-fadeIn border border-black dark:border-gray-600"
+          className="fixed bottom-28 sm:bottom-20 right-6 p-3 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 text-purple-600 dark:text-purple-400 rounded-full shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105 z-30 animate-fadeIn border border-black dark:border-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
           aria-label="Voltar ao topo"
           title="Voltar ao topo"
         >

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
+import { getButtonClass } from '../utils/uiClasses';
 
 type Mode = 'login' | 'register' | 'forgot';
 
@@ -164,7 +165,7 @@ const Login = () => {
         </div>
 
         {/* Painel do formulário */}
-        <div className="p-6 sm:p-10 flex flex-col justify-center">
+        <div className="p-6 sm:p-10 flex flex-col justify-center w-full max-w-md mx-auto lg:max-w-none">
           {/* Logo (apenas mobile) */}
           <div className="lg:hidden text-center mb-6">
             <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl mb-3">
@@ -176,7 +177,7 @@ const Login = () => {
           {mode === 'forgot' && (
             <button
               onClick={() => switchMode('login')}
-              className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 font-medium mb-4 -ml-1"
+              className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 font-medium mb-4 p-2 -ml-2 -mt-2 -mr-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 rounded-lg"
             >
               <ArrowLeft className="w-4 h-4" />
               Voltar
@@ -247,7 +248,7 @@ const Login = () => {
                     <button
                       type="button"
                       onClick={() => switchMode('forgot')}
-                      className="text-xs text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium"
+                      className="text-xs text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium p-2 -m-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 rounded-lg"
                     >
                       Esqueceu a senha?
                     </button>
@@ -268,7 +269,7 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 p-2 rounded-lg text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
                     aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -311,7 +312,7 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 p-2 rounded-lg text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
                     aria-label={showConfirmPassword ? 'Ocultar senha' : 'Mostrar senha'}
                   >
                     {showConfirmPassword ? (
@@ -328,7 +329,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl shadow-lg transition-all transform hover:scale-105"
+              className={`w-full disabled:opacity-50 disabled:cursor-not-allowed ${getButtonClass('purple')}`}
             >
               {loading ? (
                 <span>Aguarde...</span>
@@ -361,7 +362,7 @@ const Login = () => {
 
               <button
                 onClick={handleDemoLogin}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 border-2 border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950 font-semibold rounded-xl transition-colors"
+                className="w-full flex items-center justify-center gap-2 px-6 py-3 border-2 border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950 font-semibold rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-800"
               >
                 <Sparkles className="w-5 h-5" />
                 Continuar como visitante (modo demo)
@@ -373,7 +374,7 @@ const Login = () => {
                   {mode === 'register' ? 'Já tem uma conta?' : 'Não tem uma conta?'}{' '}
                   <button
                     onClick={() => switchMode(mode === 'register' ? 'login' : 'register')}
-                    className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-semibold underline"
+                    className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-semibold underline p-2 -m-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 rounded-lg"
                   >
                     {mode === 'register' ? 'Fazer login' : 'Criar conta'}
                   </button>

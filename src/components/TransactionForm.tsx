@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Transaction, TransactionType } from '../types';
 import { Save, X, Settings } from 'lucide-react';
+import { SECTION_HEADING_CLASS, SECONDARY_BUTTON_CLASS, getButtonClass } from '../utils/uiClasses';
 
 interface TransactionFormProps {
   onSubmit: (transaction: Transaction) => void;
@@ -169,7 +170,8 @@ const TransactionForm = ({
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8">
       <div className="flex items-center justify-between mb-4 sm:mb-6">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">
+        <h2 className={SECTION_HEADING_CLASS}>
+          <Save className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
           {editingTransaction ? 'Editar Transação' : 'Nova Transação'}
         </h2>
       </div>
@@ -183,7 +185,7 @@ const TransactionForm = ({
               <button
                 type="button"
                 onClick={() => setType('entrada')}
-                className={`py-3 px-4 rounded-xl font-semibold transition-all ${
+                className={`py-3 px-4 rounded-xl font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-800 ${
                   type === 'entrada'
                     ? 'bg-green-500 text-white shadow-lg'
                     : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
@@ -194,7 +196,7 @@ const TransactionForm = ({
               <button
                 type="button"
                 onClick={() => setType('saida')}
-                className={`py-3 px-4 rounded-xl font-semibold transition-all ${
+                className={`py-3 px-4 rounded-xl font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-800 ${
                   type === 'saida'
                     ? 'bg-red-500 text-white shadow-lg'
                     : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
@@ -241,7 +243,7 @@ const TransactionForm = ({
               <button
                 type="button"
                 onClick={onManagePaymentMethods}
-                className="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium flex items-center gap-1"
+                className="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium flex items-center gap-1 p-2 -m-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 rounded-lg"
               >
                 <Settings className="w-4 h-4" />
                 Gerenciar
@@ -261,12 +263,12 @@ const TransactionForm = ({
                 ))}
               </select>
             ) : (
-              <div className="p-4 bg-yellow-50 dark:bg-yellow-950 border-2 border-yellow-200 dark:border-yellow-900 rounded-xl text-sm text-yellow-800 dark:text-yellow-300">
+              <div className="p-4 bg-amber-50 dark:bg-amber-950 border-2 border-amber-200 dark:border-amber-900 rounded-xl text-sm text-amber-800 dark:text-amber-300">
                 Nenhum método cadastrado.{' '}
                 <button
                   type="button"
                   onClick={onManagePaymentMethods}
-                  className="font-semibold underline hover:text-yellow-900 dark:hover:text-yellow-200"
+                  className="font-semibold underline hover:text-amber-900 dark:hover:text-amber-200"
                 >
                   Clique aqui para adicionar
                 </button>
@@ -295,7 +297,7 @@ const TransactionForm = ({
               <button
                 type="button"
                 onClick={onManageCategories}
-                className="text-sm text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 font-medium flex items-center gap-1"
+                className="text-sm text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 font-medium flex items-center gap-1 p-2 -m-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 rounded-lg"
               >
                 <Settings className="w-4 h-4" />
                 Gerenciar
@@ -315,12 +317,12 @@ const TransactionForm = ({
                 ))}
               </select>
             ) : (
-              <div className="p-4 bg-yellow-50 dark:bg-yellow-950 border-2 border-yellow-200 dark:border-yellow-900 rounded-xl text-sm text-yellow-800 dark:text-yellow-300">
+              <div className="p-4 bg-amber-50 dark:bg-amber-950 border-2 border-amber-200 dark:border-amber-900 rounded-xl text-sm text-amber-800 dark:text-amber-300">
                 Nenhuma categoria cadastrada.{' '}
                 <button
                   type="button"
                   onClick={onManageCategories}
-                  className="font-semibold underline hover:text-yellow-900 dark:hover:text-yellow-200"
+                  className="font-semibold underline hover:text-amber-900 dark:hover:text-amber-200"
                 >
                   Clique aqui para adicionar
                 </button>
@@ -343,15 +345,12 @@ const TransactionForm = ({
           <button
             type="button"
             onClick={onCancel}
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-xl transition-colors order-2 sm:order-1"
+            className={`order-2 sm:order-1 ${SECONDARY_BUTTON_CLASS}`}
           >
             <X className="w-5 h-5" />
             {editingTransaction ? 'Cancelar Edição' : 'Limpar'}
           </button>
-          <button
-            type="submit"
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg transition-all transform hover:scale-105 order-1 sm:order-2"
-          >
+          <button type="submit" className={`order-1 sm:order-2 ${getButtonClass('purple')}`}>
             <Save className="w-5 h-5" />
             {editingTransaction ? 'Atualizar' : 'Salvar'}
           </button>

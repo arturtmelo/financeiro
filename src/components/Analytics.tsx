@@ -25,7 +25,9 @@ import {
   Wallet,
 } from 'lucide-react';
 import { filterTransactionsByPeriod, formatCurrency, PeriodFilter } from '../utils/calculations';
+import { SECTION_HEADING_CLASS, SUBSECTION_HEADING_CLASS } from '../utils/uiClasses';
 import PeriodTabs from './PeriodTabs';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface AnalyticsProps {
   transactions: Transaction[];
@@ -45,6 +47,17 @@ const COLORS = [
 type AnalyticsPeriod = Extract<PeriodFilter, 'week' | 'month' | 'quarter' | 'year' | 'all'>;
 
 const Analytics = ({ transactions }: AnalyticsProps) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  const tooltipContentStyle = {
+    backgroundColor: isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+    border: 'none',
+    borderRadius: '8px',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    color: isDark ? '#f3f4f6' : '#111827',
+  };
+  const axisTickColor = isDark ? '#9ca3af' : '#6b7280';
+
   const [periodFilter, setPeriodFilter] = useState<AnalyticsPeriod>('month');
 
   // Filtrar transações por período (mesma lógica compartilhada com o Dashboard)
@@ -142,6 +155,9 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
     return Object.values(dataByMonth).sort((a, b) => a.month.localeCompare(b.month));
   }, [filteredTransactions]);
 
+  // Evita rótulos sobrepostos no eixo X quando há muitos meses (períodos "Ano"/"Tudo")
+  const xAxisTickInterval = Math.max(0, Math.ceil(timelineData.length / 6) - 1);
+
   // Formatar label do mês
   const formatMonthLabel = (monthStr: string) => {
     const [year, month] = monthStr.split('-');
@@ -168,7 +184,7 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
       <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
         <div className="flex flex-col gap-3 sm:gap-4">
           <div>
-            <h2 className="text-lg sm:text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+            <h2 className={SECTION_HEADING_CLASS}>
               <Target className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
               Análise Financeira
             </h2>
@@ -250,19 +266,17 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Gráfico: Gastos por Categoria */}
         <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
-          <h3 className="text-base sm:text-lg font-bold text-gray-800 dark:text-gray-100 mb-3 sm:mb-4 flex items-center gap-2">
+          <h3 className={`${SUBSECTION_HEADING_CLASS} mb-3 sm:mb-4`}>
             <Wallet className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-400" />
             Gastos por Categoria
           </h3>
           {categoryData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={250}>
+            <ResponsiveContainer width="100%" height={280}>
               <PieChart>
                 <Pie
                   data={categoryData}
                   cx="50%"
                   cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }: any) => `${name}: ${(percent * 100).toFixed(0)}%`}
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
@@ -273,13 +287,9 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
                 </Pie>
                 <Tooltip
                   formatter={(value: number) => formatCurrency(value)}
-                  contentStyle={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    border: 'none',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                  }}
+                  contentStyle={tooltipContentStyle}
                 />
+                <Legend wrapperStyle={{ fontSize: '12px', color: axisTickColor }} />
               </PieChart>
             </ResponsiveContainer>
           ) : (
@@ -291,19 +301,17 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
 
         {/* Gráfico: Gastos por Método */}
         <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
-          <h3 className="text-base sm:text-lg font-bold text-gray-800 dark:text-gray-100 mb-3 sm:mb-4 flex items-center gap-2">
+          <h3 className={`${SUBSECTION_HEADING_CLASS} mb-3 sm:mb-4`}>
             <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-400" />
             Gastos por Método de Pagamento
           </h3>
           {paymentMethodData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={250}>
+            <ResponsiveContainer width="100%" height={280}>
               <PieChart>
                 <Pie
                   data={paymentMethodData}
                   cx="50%"
                   cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }: any) => `${name}: ${(percent * 100).toFixed(0)}%`}
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
@@ -314,13 +322,9 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
                 </Pie>
                 <Tooltip
                   formatter={(value: number) => formatCurrency(value)}
-                  contentStyle={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    border: 'none',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                  }}
+                  contentStyle={tooltipContentStyle}
                 />
+                <Legend wrapperStyle={{ fontSize: '12px', color: axisTickColor }} />
               </PieChart>
             </ResponsiveContainer>
           ) : (
@@ -332,7 +336,7 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
 
         {/* Gráfico Combinado: Entradas vs Saídas + Evolução do Saldo */}
         <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 lg:col-span-2">
-          <h3 className="text-base sm:text-lg font-bold text-gray-800 dark:text-gray-100 mb-3 sm:mb-4 flex items-center gap-2">
+          <h3 className={`${SUBSECTION_HEADING_CLASS} mb-3 sm:mb-4`}>
             <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-400" />
             Evolução: Entradas, Saídas e Saldo
           </h3>
@@ -349,24 +353,23 @@ const Analytics = ({ transactions }: AnalyticsProps) => {
                   return acc;
                 }, [] as Array<(typeof timelineData)[0] & { saldo: number }>)}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#374151' : '#f0f0f0'} />
                 <XAxis
                   dataKey="month"
                   tickFormatter={formatMonthLabel}
-                  style={{ fontSize: '12px' }}
+                  interval={xAxisTickInterval}
+                  tick={{ fontSize: 12, fill: axisTickColor }}
                 />
-                <YAxis tickFormatter={(value) => `R$ ${value}`} style={{ fontSize: '12px' }} />
+                <YAxis
+                  tickFormatter={(value) => `R$ ${value}`}
+                  tick={{ fontSize: 12, fill: axisTickColor }}
+                />
                 <Tooltip
                   formatter={(value: number) => formatCurrency(value)}
                   labelFormatter={formatMonthLabel}
-                  contentStyle={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    border: 'none',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                  }}
+                  contentStyle={tooltipContentStyle}
                 />
-                <Legend />
+                <Legend wrapperStyle={{ fontSize: '12px', color: axisTickColor }} />
                 <Bar dataKey="entradas" fill="#10b981" name="Entradas" radius={[8, 8, 0, 0]} />
                 <Bar dataKey="saidas" fill="#ef4444" name="Saídas" radius={[8, 8, 0, 0]} />
                 <Line

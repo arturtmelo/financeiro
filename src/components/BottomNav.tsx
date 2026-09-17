@@ -15,7 +15,7 @@ const BottomNav = ({ activeTab, onTabChange, onNewTransaction }: BottomNavProps)
       <div className="grid grid-cols-3 items-center h-16">
         <button
           onClick={() => onTabChange('overview')}
-          className={`flex flex-col items-center justify-center gap-1 h-full transition-colors ${
+          className={`flex flex-col items-center justify-center gap-1 h-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-inset ${
             activeTab === 'overview'
               ? 'text-purple-600 dark:text-purple-400'
               : 'text-gray-500 dark:text-gray-400'
@@ -28,7 +28,7 @@ const BottomNav = ({ activeTab, onTabChange, onNewTransaction }: BottomNavProps)
         <div className="flex items-center justify-center">
           <button
             onClick={onNewTransaction}
-            className="flex items-center justify-center w-16 h-16 rounded-full shadow-2xl ring-4 ring-white/60 dark:ring-gray-900/60 -translate-y-5 transition-all transform active:scale-95 bg-gradient-to-br from-green-500 to-emerald-600 text-white"
+            className="flex items-center justify-center w-16 h-16 rounded-full shadow-2xl ring-4 ring-white/60 dark:ring-gray-900/60 -translate-y-5 transition-all transform active:scale-95 bg-gradient-to-br from-green-500 to-emerald-600 text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-green-300"
             aria-label="Nova transação"
           >
             <DollarSign className="w-7 h-7" />
@@ -37,7 +37,7 @@ const BottomNav = ({ activeTab, onTabChange, onNewTransaction }: BottomNavProps)
 
         <button
           onClick={() => onTabChange('analytics')}
-          className={`flex flex-col items-center justify-center gap-1 h-full transition-colors ${
+          className={`flex flex-col items-center justify-center gap-1 h-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-inset ${
             activeTab === 'analytics'
               ? 'text-purple-600 dark:text-purple-400'
               : 'text-gray-500 dark:text-gray-400'

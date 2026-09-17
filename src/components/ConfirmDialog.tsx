@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { AlertTriangle, X } from 'lucide-react';
+import { MODAL_TITLE_CLASS, SECONDARY_BUTTON_CLASS } from '../utils/uiClasses';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -80,11 +81,16 @@ const ConfirmDialog = ({
       'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700',
   };
 
+  const confirmRingColorClasses = {
+    red: 'focus-visible:ring-red-500',
+    blue: 'focus-visible:ring-blue-500',
+    green: 'focus-visible:ring-green-500',
+  };
+
   return (
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn z-[60]"
       onClick={handleBackdropClick}
-      style={{ alignItems: 'center', justifyContent: 'center', zIndex: 6000 }}
     >
       <div
         ref={dialogRef}
@@ -100,16 +106,16 @@ const ConfirmDialog = ({
               <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg">
                 <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
-              <h3 id="confirm-dialog-title" className="text-lg sm:text-xl font-bold">
+              <h3 id="confirm-dialog-title" className={MODAL_TITLE_CLASS}>
                 {title}
               </h3>
             </div>
             <button
               onClick={onCancel}
-              className="p-1.5 hover:bg-white/20 rounded-lg transition-colors flex-shrink-0"
+              className="p-2 hover:bg-white/20 rounded-lg transition-colors flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               aria-label="Fechar"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
           </div>
         </div>
@@ -126,13 +132,13 @@ const ConfirmDialog = ({
           <button
             ref={confirmButtonRef}
             onClick={onConfirm}
-            className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 sm:py-2.5 ${confirmButtonColorClasses[confirmColor]} text-white font-semibold rounded-xl shadow-lg transition-all transform active:scale-95 sm:hover:scale-105 order-1`}
+            className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 sm:py-2.5 ${confirmButtonColorClasses[confirmColor]} text-white font-semibold rounded-xl shadow-lg transition-all transform active:scale-95 sm:hover:scale-105 order-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 ${confirmRingColorClasses[confirmColor]}`}
           >
             {confirmText}
           </button>
           <button
             onClick={onCancel}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 sm:py-2.5 bg-gray-200 hover:bg-gray-300 active:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100 text-gray-700 font-semibold rounded-xl transition-colors order-2"
+            className={`w-full sm:w-auto order-2 ${SECONDARY_BUTTON_CLASS}`}
           >
             {cancelText}
           </button>

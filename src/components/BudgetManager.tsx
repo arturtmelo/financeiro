@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PiggyBank, Plus, Trash2, Edit2, X, Save } from 'lucide-react';
 import { Budget } from '../types';
 import { formatCurrency } from '../utils/calculations';
 import ConfirmDialog from './ConfirmDialog';
+import EmptyState from './EmptyState';
 
 interface BudgetManagerProps {
   budgets: Budget[];
@@ -59,6 +60,14 @@ const BudgetManager = ({
     id: string;
     category: string;
   }>({ isOpen: false, id: '', category: '' });
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
 
   const handleAdd = () => {
     const limitValue = parseFormattedValue(newLimit);
@@ -129,7 +138,7 @@ const BudgetManager = ({
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-lg transition-colors flex-shrink-0"
+              className="p-2 hover:bg-white/20 rounded-lg transition-colors flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               aria-label="Fechar"
             >
               <X className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -149,7 +158,7 @@ const BudgetManager = ({
                 <select
                   value={newCategory}
                   onChange={(e) => setNewCategory(e.target.value)}
-                  className="flex-1 px-3 sm:px-4 py-2 border-2 border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 rounded-xl focus:border-amber-500 focus:outline-none transition-colors text-sm sm:text-base"
+                  className="flex-1 px-3 sm:px-4 py-2 border-2 border-gray-200 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 rounded-xl focus:border-amber-500 focus:outline-none transition-colors text-sm sm:text-base"
                 >
                   {availableCategories.map((cat) => (
                     <option key={cat} value={cat}>
@@ -163,7 +172,7 @@ const BudgetManager = ({
                   value={newLimit}
                   onChange={(e) => setNewLimit(formatCurrencyInput(e.target.value))}
                   placeholder="Limite (R$)"
-                  className="flex-1 px-3 sm:px-4 py-2 border-2 border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 rounded-xl focus:border-amber-500 focus:outline-none transition-colors text-sm sm:text-base"
+                  className="flex-1 px-3 sm:px-4 py-2 border-2 border-gray-200 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 rounded-xl focus:border-amber-500 focus:outline-none transition-colors text-sm sm:text-base"
                 />
                 <button
                   onClick={handleAdd}
@@ -176,7 +185,7 @@ const BudgetManager = ({
               </div>
             </div>
           ) : (
-            <div className="p-4 bg-yellow-50 dark:bg-yellow-950 border-2 border-yellow-200 dark:border-yellow-900 rounded-xl text-sm text-yellow-800 dark:text-yellow-300">
+            <div className="p-4 bg-amber-50 dark:bg-amber-950 border-2 border-amber-200 dark:border-amber-900 rounded-xl text-sm text-amber-800 dark:text-amber-300">
               {categories.length === 0
                 ? 'Cadastre categorias primeiro para poder definir orçamentos.'
                 : 'Todas as categorias já têm um orçamento definido.'}
@@ -192,11 +201,11 @@ const BudgetManager = ({
               {budgets.map((budget) => (
                 <div
                   key={budget.id}
-                  className="flex items-center justify-between p-2 sm:p-3 bg-gray-50 dark:bg-gray-900 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group"
+                  className="p-2 sm:p-3 bg-gray-50 dark:bg-gray-900 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 >
                   {editingId === budget.id ? (
-                    <>
-                      <span className="font-medium text-gray-800 dark:text-gray-100 text-sm sm:text-base mr-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                      <span className="font-medium text-gray-800 dark:text-gray-100 text-sm sm:text-base sm:mr-2">
                         {budget.category}
                       </span>
                       <input
@@ -205,63 +214,68 @@ const BudgetManager = ({
                         value={editingLimit}
                         onChange={(e) => setEditingLimit(formatCurrencyInput(e.target.value))}
                         onKeyDown={(e) => e.key === 'Enter' && handleSaveEdit(budget)}
-                        className="flex-1 px-3 py-1 border-2 border-amber-500 dark:bg-gray-800 dark:text-gray-100 rounded-lg focus:outline-none text-sm sm:text-base"
+                        className="flex-1 px-3 py-1.5 border-2 border-amber-500 dark:bg-gray-900 dark:text-gray-100 rounded-lg focus:outline-none text-sm sm:text-base"
                         autoFocus
                       />
-                      <div className="flex items-center gap-1 sm:gap-2 ml-2">
+                      <div className="flex items-center gap-1 sm:gap-2">
                         <button
                           onClick={() => handleSaveEdit(budget)}
-                          className="p-1.5 sm:p-2 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-950 rounded-lg transition-colors"
+                          className="p-2 text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950 hover:bg-green-100 dark:hover:bg-green-900 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
+                          aria-label="Salvar"
                           title="Salvar"
                         >
                           <Save className="w-4 h-4" />
                         </button>
                         <button
                           onClick={handleCancelEdit}
-                          className="p-1.5 sm:p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
+                          className="p-2 text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
+                          aria-label="Cancelar edição"
                           title="Cancelar"
                         >
                           <X className="w-4 h-4" />
                         </button>
                       </div>
-                    </>
+                    </div>
                   ) : (
-                    <>
+                    <div className="flex items-center justify-between gap-2">
                       <div className="flex-1 min-w-0">
-                        <span className="font-medium text-gray-800 dark:text-gray-100 text-sm sm:text-base">
+                        <span className="font-medium text-gray-800 dark:text-gray-100 text-sm sm:text-base truncate block">
                           {budget.category}
                         </span>
                         <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                           Limite: {formatCurrency(budget.limit)}
                         </p>
                       </div>
-                      <div className="flex items-center gap-1 sm:gap-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
                         <button
                           onClick={() => handleStartEdit(budget)}
-                          className="p-1.5 sm:p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950 rounded-lg transition-colors"
+                          className="p-2 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
+                          aria-label={`Editar orçamento de "${budget.category}"`}
                           title="Editar"
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDeleteClick(budget.id, budget.category)}
-                          className="p-1.5 sm:p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 rounded-lg transition-colors"
+                          className="p-2 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950 hover:bg-red-100 dark:hover:bg-red-900 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
+                          aria-label={`Excluir orçamento de "${budget.category}"`}
                           title="Excluir"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
-                    </>
+                    </div>
                   )}
                 </div>
               ))}
 
               {budgets.length === 0 && (
-                <div className="text-center py-8 text-gray-400 dark:text-gray-500">
-                  <PiggyBank className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm sm:text-base">Nenhum orçamento definido</p>
-                  <p className="text-xs sm:text-sm mt-1">Defina um limite por categoria acima</p>
-                </div>
+                <EmptyState
+                  icon={PiggyBank}
+                  title="Nenhum orçamento definido"
+                  subtitle="Defina um limite por categoria acima"
+                  compact
+                />
               )}
             </div>
           </div>
